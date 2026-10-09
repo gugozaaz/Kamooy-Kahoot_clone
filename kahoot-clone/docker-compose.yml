@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build: ./backend
@@ -26,7 +24,7 @@ services:
 
   cloudflared:
     image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate run --token eyJhIjoiYWRhYWMwNDBmMTRhNzYyMjI0NWFmYTkwMzkzN2EzNzQiLCJ0IjoiMzY4YzkyMzQtNjc4ZC00YzExLTkzMTQtMzQ1M2I3ZDg1ZDVkIiwicyI6Ik9URmxNelpoTnpNdE4yVTVNaTAwTXpJd0xUbGhNRGt0TmpNNFlUZ3lZemN6WVRZNU56VmhNelZoTjJJdE9EZzFZUzAwWXpJNExXSm1PREF0Wm1abU5HSmlNR0ZrWm1aayJ9
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
     restart: unless-stopped
     depends_on:
       - nginx

@@ -5,12 +5,16 @@ import { readJsonBody, sendJson, withErrorHandling, ApiError } from './_lib/http
 export default withErrorHandling(async (req, res) => {
   if (req.method !== 'POST') throw new ApiError(405, 'Method not allowed');
   const { pin, nickname } = await readJsonBody(req);
-  if (!pin || !nickname) throw new ApiError(400, 'pin and nickname are required');
+  if (!pin || typeof pin !== 'string') throw new ApiError(400, 'Valid PIN is required');
+  if (!nickname || typeof nickname !== 'string' || !nickname.trim()) {
+    throw new ApiError(400, 'Valid nickname is required');
+  }
+  const cleanNickname = nickname.trim().slice(0, 30);
 
   const store = await getStore();
   const playerId = crypto.randomUUID();
-  const result = await store.withGame(pin, (game, now) => {
-    joinPlayer(game, playerId, nickname, now);
+  const result = await store.withGame(pin.trim(), (game, now) => {
+    joinPlayer(game, playerId, cleanNickname, now);
   });
   if (!result) throw new ApiError(404, 'Game not found');
 

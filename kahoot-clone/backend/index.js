@@ -4,6 +4,7 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 
 const app = express();
+app.disable('x-powered-by');
 app.use(cors());
 
 const server = http.createServer(app);
@@ -12,7 +13,7 @@ const io = new Server(server, {
     origin: "*",
     methods: ["GET", "POST"]
   },
-  maxHttpBufferSize: 1e8 // 100 MB for large image uploads
+  maxHttpBufferSize: 1e7 // 10 MB limit for security
 });
 
 // In-memory data store for Phase 1
@@ -38,14 +39,16 @@ io.on('connection', (socket) => {
             hostId: socket.id,
             status: 'LOBBY',
             players: {},
-            questions: questions || [],
+            questions: Array.isArray(questions) ? questions : [],
             currentQuestionIndex: 0,
             answers: {},
             questionStartTime: 0
         };
         socket.join(pin);
         console.log(`Game created: ${pin} by Host: ${socket.id}`);
-        callback({ success: true, pin });
+        if (typeof callback === 'function') {
+            callback({ success: true, pin });
+        }
     });
 
     function triggerShowResult(pin) {
@@ -180,19 +183,33 @@ io.on('connection', (socket) => {
 
     // PLAYER EVENTS
     socket.on('join-game', (data, callback) => {
-        const { pin, nickname } = data;
-        const game = games[pin];
+        if (!data || typeof data !== 'object') {
+            if (typeof callback === 'function') callback({ success: false, message: 'Invalid payload' });
+            return;
+        }
+        const pin = String(data.pin || '').trim();
+        const rawNickname = typeof data.nickname === 'string' ? data.nickname.trim() : '';
+        const nickname = rawNickname.slice(0, 30); // Prevent oversized nicknames
+        
+        if (!pin || !nickname) {
+            if (typeof callback === 'function') callback({ success: false, message: 'PIN and nickname are required' });
+            return;
+        }
 
+        const game = games[pin];
         if (!game) {
-            return callback({ success: false, message: 'Game not found' });
+            if (typeof callback === 'function') callback({ success: false, message: 'Game not found' });
+            return;
         }
         if (game.status !== 'LOBBY') {
-            return callback({ success: false, message: 'Game already started' });
+            if (typeof callback === 'function') callback({ success: false, message: 'Game already started' });
+            return;
         }
         
         const nameExists = Object.values(game.players).some(p => p.nickname === nickname);
-        if(nameExists) {
-             return callback({ success: false, message: 'Nickname taken' });
+        if (nameExists) {
+            if (typeof callback === 'function') callback({ success: false, message: 'Nickname taken' });
+            return;
         }
 
         socket.join(pin);
@@ -203,11 +220,15 @@ io.on('connection', (socket) => {
         };
 
         io.to(game.hostId).emit('player-joined', game.players[socket.id]);
-        callback({ success: true, pin, player: game.players[socket.id] });
+        if (typeof callback === 'function') {
+            callback({ success: true, pin, player: game.players[socket.id] });
+        }
     });
 
     socket.on('submit-answer', (data) => {
-        const { pin, selectedIndex } = data; // single index now
+        if (!data || typeof data !== 'object') return;
+        const { pin, selectedIndex } = data;
+        if (typeof selectedIndex !== 'number') return;
         const game = games[pin];
         if (game && game.status === 'QUESTION_ACTIVE' && game.players[socket.id]) {
             // Record answer and timestamp
