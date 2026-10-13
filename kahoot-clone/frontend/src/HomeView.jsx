@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './index.css'; 
+import FloatingParticles from './components/FloatingParticles';
+import SoundToggle from './components/SoundToggle';
+import { sfx } from './lib/sound';
+import './index.css';
 
 export default function HomeView() {
   const [pin, setPin] = useState('');
@@ -8,79 +11,95 @@ export default function HomeView() {
 
   const handleJoin = (e) => {
     e.preventDefault();
+    sfx.unlock();
+    sfx.pop();
     if (pin.trim().length === 6) {
-      navigate(`/play?pin=${pin}`);
+      navigate(`/play?pin=${pin.trim()}`);
     } else {
-      alert("Please enter a valid 6-digit game PIN.");
+      alert("กรุณาใส่รหัส Game PIN 6 หลัก");
     }
   };
 
   return (
-    <div className="home-container" style={{ backgroundColor: '#ffcc00', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-      
-      <button 
-        onClick={() => navigate('/dashboard')}
+    <div className="home-container game-bg" style={{ backgroundColor: '#ffcc00', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '20px' }}>
+      <FloatingParticles />
+      <SoundToggle />
+
+      <button
+        onClick={() => { sfx.unlock(); sfx.pop(); navigate('/dashboard'); }}
+        className="btn-primary"
         style={{
           position: 'absolute',
           top: '20px',
-          right: '20px',
-          padding: '10px 20px',
-          backgroundColor: '#fff',
-          color: '#333',
-          border: 'none',
-          borderRadius: '5px',
-          fontWeight: 'bold',
+          right: '80px',
+          padding: '10px 24px',
+          borderRadius: '999px',
+          fontWeight: 800,
           cursor: 'pointer',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          background: '#ffffff',
+          color: '#111827',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 10
         }}
       >
-        เข้าสู่ระบบ
+        🛠️ จัดการสื่อ / Host Game
       </button>
 
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '4rem', color: '#fff', textShadow: '2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000', margin: 0 }}>
+      <div style={{ textAlign: 'center', marginBottom: '28px', position: 'relative', zIndex: 1 }}>
+        <h1 style={{ fontSize: '5rem', color: '#fff', textShadow: '4px 4px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000', margin: 0, letterSpacing: '2px' }}>
           Kamooy!
         </h1>
+        <p style={{ color: '#1f2937', fontSize: '1.3rem', fontWeight: 800, margin: '8px 0 0 0' }}>
+          เกมตอบคำถามสุดมันส์ เล่นพร้อมกันได้ทุกคน 🚀
+        </p>
       </div>
 
       <form onSubmit={handleJoin} style={{
         backgroundColor: '#fff',
-        padding: '20px',
-        borderRadius: '5px',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+        padding: '30px 24px',
+        borderRadius: '24px',
+        boxShadow: '0 12px 36px rgba(0,0,0,0.22)',
         display: 'flex',
         flexDirection: 'column',
-        width: '300px'
+        width: '100%',
+        maxWidth: '340px',
+        position: 'relative',
+        zIndex: 1,
+        boxSizing: 'border-box'
       }}>
-        <input 
-          type="text" 
-          placeholder="Game PIN" 
+        <input
+          type="text"
+          placeholder="Game PIN"
           value={pin}
           onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+          maxLength={6}
           style={{
-            padding: '15px',
-            fontSize: '1.2rem',
+            padding: '16px',
+            fontSize: '1.6rem',
             textAlign: 'center',
-            marginBottom: '10px',
-            border: '2px solid #ccc',
-            borderRadius: '4px',
-            fontWeight: 'bold'
+            marginBottom: '16px',
+            border: '3px solid #e5e7eb',
+            borderRadius: '14px',
+            fontWeight: 900,
+            letterSpacing: '4px',
+            fontFamily: 'monospace, sans-serif'
           }}
         />
-        <button 
+        <button
           type="submit"
+          className="btn-primary"
           style={{
-            padding: '15px',
-            fontSize: '1.2rem',
-            backgroundColor: '#333',
+            padding: '16px',
+            fontSize: '1.3rem',
+            backgroundColor: '#111827',
             color: '#fff',
             border: 'none',
-            borderRadius: '4px',
+            borderRadius: '14px',
             cursor: 'pointer',
-            fontWeight: 'bold'
+            fontWeight: 900
           }}
         >
-          Enter
+          Enter ➔
         </button>
       </form>
     </div>

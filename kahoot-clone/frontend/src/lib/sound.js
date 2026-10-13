@@ -149,6 +149,19 @@ const effects = {
     tone({ freq: NOTE.E5, dur: 0.1, type: 'triangle', gain: 0.14 });
     tone({ freq: NOTE.A5, dur: 0.14, type: 'triangle', gain: 0.12, at: 0.08 });
   },
+  // Snappy click for buttons and answer pad taps
+  pop: () => {
+    tone({ freq: 880, dur: 0.04, type: 'sine', gain: 0.15 });
+  },
+  // Powerup / Double Points
+  powerup: () => {
+    [NOTE.C5, NOTE.G5, NOTE.C6, NOTE.E6].forEach((f, i) =>
+      tone({ freq: f, dur: 0.12, type: 'triangle', gain: 0.18, at: i * 0.05 }));
+  },
+  // Suspenseful drumroll/rumble
+  drumroll: () => {
+    noise({ dur: 0.6, gain: 0.12, from: 800, to: 200 });
+  },
   // Final scoreboard.
   fanfare: () => {
     const seq = [

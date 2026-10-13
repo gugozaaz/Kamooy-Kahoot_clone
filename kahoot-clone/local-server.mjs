@@ -27,6 +27,15 @@ console.log(`Store: ${process.env.POSTGRES_URL || process.env.DATABASE_URL ? 'po
 const PORT = process.env.PORT || 8787;
 
 http.createServer(async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
+
   const url = new URL(req.url, 'http://localhost');
   // Vercel's runtime exposes parsed query params on req.query; mirror that here
   req.query = Object.fromEntries(url.searchParams);

@@ -1,8 +1,11 @@
 services:
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     environment:
       - NODE_ENV=production
+      - PORT=3001
     restart: unless-stopped
 
   frontend:

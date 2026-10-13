@@ -1,7 +1,8 @@
 FROM node:22-alpine
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
+COPY local-server.mjs ./
+COPY frontend/api ./frontend/api
 EXPOSE 3001
-CMD ["node", "index.js"]
+ENV PORT=3001
+CMD ["node", "local-server.mjs"]
+
