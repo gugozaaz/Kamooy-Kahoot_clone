@@ -279,7 +279,7 @@ export default function HostView() {
         </div>
 
         {/* Players Grid with Avatars */}
-        <div className="players-grid" style={{ position: 'relative', zIndex: 1, minHeight: '120px', width: '100%', maxWidth: '1000px', marginBottom: '30px' }}>
+        <div className="players-grid-scroll">
           {players.length === 0 ? (
             <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.3rem', fontWeight: 'bold', gridColumn: '1 / -1', textAlign: 'center', animation: 'floatY 2s ease-in-out infinite' }}>
               🎮 กำลังรอผู้เล่นใส่ PIN เพื่อเข้าสู่เกม...
@@ -302,8 +302,8 @@ export default function HostView() {
         {/* Start Game Button */}
         {players.length > 0 && (
           <button
-            className="btn-primary btn-glow"
-            style={{ position: 'relative', zIndex: 1, fontSize: '1.8rem', padding: '16px 48px', borderRadius: '999px' }}
+            className="btn-kamooy btn-kamooy-primary btn-glow"
+            style={{ position: 'relative', zIndex: 1, fontSize: '1.8rem', padding: '0 48px', height: '64px', borderRadius: '999px' }}
             onClick={() => { sfx.unlock(); sfx.start(); runHostAction('start-game'); }}
           >
             🚀 เริ่มเกมเลย! (Start Game)
@@ -351,8 +351,11 @@ export default function HostView() {
   }
 
   if (gameState === 'QUESTION_ACTIVE') {
+    const choicesCount = currentQuestion?.choices?.length || 4;
+    const hostGridClass = choicesCount === 2 ? 'host-grid-2' : choicesCount === 3 ? 'host-grid-3' : choicesCount === 4 ? 'host-grid-4' : 'host-grid-more';
+
     return (
-      <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: '20px', overflow: 'hidden' }}>
+      <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100vh', maxHeight: '100vh', overflow: 'hidden', padding: 'clamp(12px, 2vh, 20px)' }}>
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
@@ -362,40 +365,40 @@ export default function HostView() {
           <img src={currentQuestion.image} alt="Background" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 0, opacity: 0.8 }} />
         )}
 
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', maxWidth: '1200px', margin: '0 auto', width: '100%', flex: 1 }}>
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', maxWidth: '1280px', margin: '0 auto', width: '100%', flex: 1 }}>
 
           {/* Top Header Bar */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <CountdownRing value={timeLeft} total={questionTotal} size={96} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <CountdownRing value={timeLeft} total={questionTotal} size={84} />
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               {currentQuestion?.scoreMultiplier > 1 && (
-                <span className="streak-badge" style={{ margin: 0, padding: '8px 20px', fontSize: '1.2rem' }}>
+                <span className="streak-badge" style={{ margin: 0, padding: '6px 18px', fontSize: '1.1rem' }}>
                   🔥 คะแนน x{currentQuestion.scoreMultiplier}!
                 </span>
               )}
-              <span className={`answer-counter${answerBump ? ' bump' : ''}`} style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1f2937', background: 'white', padding: '10px 22px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
+              <span className={`answer-counter${answerBump ? ' bump' : ''}`} style={{ fontSize: '1.3rem', fontWeight: 800, color: '#1f2937', background: 'white', padding: '8px 20px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
                 ⚡ ตอบแล้ว: {answersCount} / {players.length} คน
               </span>
             </div>
           </div>
 
           {/* Headline */}
-          <div className="question-headline" style={{ textAlign: 'center', backgroundColor: '#fff', padding: '22px 32px', borderRadius: '16px', fontSize: '2.5rem', fontWeight: 800, color: '#111827', boxShadow: '0 6px 20px rgba(0,0,0,0.12)' }}>
+          <div className="question-headline" style={{ textAlign: 'center', backgroundColor: '#fff', padding: 'clamp(14px, 2vh, 22px) 28px', borderRadius: '16px', fontSize: 'clamp(1.6rem, 2.4vw, 2.6rem)', fontWeight: 800, color: '#111827', boxShadow: '0 6px 20px rgba(0,0,0,0.12)', lineHeight: 1.25 }}>
             {currentQuestion?.text}
           </div>
 
           {/* Middle Image Area */}
-          <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px 0', minHeight: '120px' }}>
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px 0', minHeight: '80px' }}>
             {currentQuestion?.image && !currentQuestion?.isFullScreenImage && (
-              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '16px', borderRadius: '16px', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 4px 14px rgba(0,0,0,0.1)' }}>
-                <img src={currentQuestion.image} alt="Slide" style={{ maxHeight: '220px', maxWidth: '100%', objectFit: 'contain', borderRadius: '10px' }} />
+              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '12px', borderRadius: '16px', height: '100%', maxHeight: 'clamp(110px, 24vh, 230px)', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 4px 14px rgba(0,0,0,0.1)' }}>
+                <img src={currentQuestion.image} alt="Slide" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', borderRadius: '10px' }} />
               </div>
             )}
           </div>
 
-          {/* 4 Answers Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: 'auto' }}>
+          {/* Answers Cards Grid */}
+          <div className={`host-choices-container ${hostGridClass}`}>
             {currentQuestion?.choices.map((choice, i) => (
               <div
                 key={i}
@@ -404,21 +407,21 @@ export default function HostView() {
                   animationDelay: `${i * 0.08}s`,
                   backgroundColor: CHOICE_COLORS[i % CHOICE_COLORS.length],
                   color: 'white',
-                  padding: '22px 28px',
+                  padding: 'clamp(12px, 1.8vh, 22px) 24px',
                   borderRadius: '16px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '20px',
+                  gap: '16px',
                   fontWeight: 800,
-                  fontSize: '1.8rem',
-                  minHeight: '84px',
-                  boxShadow: '0 6px 0 rgba(0,0,0,0.22), 0 10px 20px rgba(0,0,0,0.15)'
+                  fontSize: choicesCount <= 3 ? 'clamp(1.5rem, 2vw, 2.1rem)' : 'clamp(1.2rem, 1.6vw, 1.8rem)',
+                  minHeight: 'clamp(62px, 8.5vh, 88px)',
+                  boxShadow: '0 5px 0 rgba(0,0,0,0.22), 0 8px 18px rgba(0,0,0,0.15)'
                 }}
               >
-                <span style={{ fontSize: '2.2rem', opacity: 0.95, textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+                <span style={{ fontSize: 'clamp(1.8rem, 2.2vw, 2.2rem)', opacity: 0.95, textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
                   {CHOICE_SYMBOLS[i % CHOICE_SYMBOLS.length]}
                 </span>
-                <div style={{ flex: 1 }}>{choice}</div>
+                <div style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>{choice}</div>
               </div>
             ))}
           </div>
@@ -429,32 +432,34 @@ export default function HostView() {
 
   if (gameState === 'QUESTION_RESULT') {
     const totalVotes = Object.values(resultData?.answersStats || {}).reduce((a, b) => a + b, 0);
+    const choicesCount = currentQuestion?.choices?.length || 4;
+    const hostGridClass = choicesCount === 2 ? 'host-grid-2' : choicesCount === 3 ? 'host-grid-3' : choicesCount === 4 ? 'host-grid-4' : 'host-grid-more';
 
     return (
-      <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: '20px', overflow: 'hidden' }}>
+      <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100vh', maxHeight: '100vh', overflow: 'hidden', padding: 'clamp(12px, 2vh, 20px)' }}>
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
         <SoundToggle />
 
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', maxWidth: '1200px', margin: '0 auto', width: '100%', flex: 1 }}>
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', maxWidth: '1280px', margin: '0 auto', width: '100%', flex: 1 }}>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
             <button
-              className="btn-primary btn-glow"
-              style={{ fontSize: '1.4rem', padding: '12px 36px', borderRadius: '999px' }}
+              className="btn-kamooy btn-kamooy-primary btn-glow"
+              style={{ fontSize: '1.25rem', padding: '0 32px', height: '48px', borderRadius: '999px' }}
               onClick={() => runHostAction('show-leaderboard')}
             >
               ดูคะแนนสรุป ➔
             </button>
           </div>
 
-          <div className="question-headline" style={{ textAlign: 'center', backgroundColor: '#fff', padding: '20px 30px', borderRadius: '16px', fontSize: '2.3rem', fontWeight: 800, boxShadow: '0 6px 20px rgba(0,0,0,0.1)' }}>
+          <div className="question-headline" style={{ textAlign: 'center', backgroundColor: '#fff', padding: 'clamp(12px, 1.8vh, 18px) 24px', borderRadius: '16px', fontSize: 'clamp(1.4rem, 2.2vw, 2.2rem)', fontWeight: 800, boxShadow: '0 6px 20px rgba(0,0,0,0.1)' }}>
             📊 ผลการตอบ: {currentQuestion?.text}
           </div>
 
           {/* Bar Chart Race */}
-          <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', padding: '24px 0', minHeight: '220px', gap: '40px' }}>
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', padding: '16px 0', minHeight: 'clamp(140px, 22vh, 220px)', gap: 'clamp(16px, 3vw, 40px)' }}>
             {currentQuestion?.choices.map((choice, i) => {
               const votes = resultData?.answersStats[i] || 0;
               const percent = totalVotes === 0 ? 0 : Math.round((votes / totalVotes) * 100);
@@ -462,10 +467,10 @@ export default function HostView() {
               const isCorrect = resultData?.correctAnswers.includes(i);
 
               return (
-                <div key={`poll-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', width: '120px', height: '100%' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '8px' }}>
+                <div key={`poll-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', width: 'clamp(80px, 9vw, 120px)', height: '100%' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '6px' }}>
                     <VoteCount value={votes} />
-                    <span style={{ fontSize: '1rem', fontWeight: 800, color: isCorrect ? '#26890c' : '#6b7280' }}>
+                    <span style={{ fontSize: '0.95rem', fontWeight: 800, color: isCorrect ? '#26890c' : '#6b7280' }}>
                       {percent}%
                     </span>
                   </div>
@@ -485,7 +490,7 @@ export default function HostView() {
           </div>
 
           {/* Choices summary */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: 'auto' }}>
+          <div className={`host-choices-container ${hostGridClass}`}>
             {currentQuestion?.choices.map((choice, i) => {
               const isCorrect = resultData?.correctAnswers.includes(i);
               return (
@@ -495,20 +500,20 @@ export default function HostView() {
                   style={{
                     backgroundColor: CHOICE_COLORS[i % CHOICE_COLORS.length],
                     color: 'white',
-                    padding: '20px 28px',
+                    padding: 'clamp(12px, 1.8vh, 18px) 24px',
                     borderRadius: '16px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '18px',
+                    gap: '16px',
                     fontWeight: 800,
-                    fontSize: '1.8rem',
-                    minHeight: '80px',
+                    fontSize: choicesCount <= 3 ? 'clamp(1.4rem, 1.8vw, 1.9rem)' : 'clamp(1.1rem, 1.4vw, 1.6rem)',
+                    minHeight: 'clamp(58px, 8vh, 76px)',
                     boxShadow: isCorrect ? '0 0 25px rgba(38,137,12,0.9)' : '0 4px 6px rgba(0,0,0,0.1)'
                   }}
                 >
-                  <span style={{ fontSize: '2.2rem', opacity: 0.95 }}>{CHOICE_SYMBOLS[i % CHOICE_SYMBOLS.length]}</span>
-                  <div style={{ flex: 1 }}>{choice}</div>
-                  {isCorrect && <span className="check-mark" style={{ fontSize: '2.6rem' }}>✔</span>}
+                  <span style={{ fontSize: 'clamp(1.8rem, 2vw, 2.2rem)', opacity: 0.95 }}>{CHOICE_SYMBOLS[i % CHOICE_SYMBOLS.length]}</span>
+                  <div style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>{choice}</div>
+                  {isCorrect && <span className="check-mark" style={{ fontSize: '2.2rem' }}>✔</span>}
                 </div>
               );
             })}
@@ -536,9 +541,9 @@ export default function HostView() {
           ))}
 
           <button
-            className="btn-primary btn-glow"
+            className="btn-kamooy btn-kamooy-primary btn-glow"
             onClick={() => runHostAction('next-question')}
-            style={{ width: '100%', marginTop: '28px', fontSize: '1.5rem', padding: '16px', borderRadius: '14px' }}
+            style={{ width: '100%', marginTop: '28px', fontSize: '1.4rem', height: '56px', borderRadius: '14px' }}
           >
             คำถามถัดไป ➔
           </button>
@@ -566,9 +571,9 @@ export default function HostView() {
 
           <div style={{ marginTop: '36px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
             <button
-              className="btn-primary btn-glow"
+              className="btn-kamooy btn-kamooy-primary btn-glow"
               onClick={() => navigate('/dashboard')}
-              style={{ fontSize: '1.4rem', padding: '14px 36px', borderRadius: '999px' }}
+              style={{ fontSize: '1.3rem', padding: '0 36px', height: '52px', borderRadius: '999px' }}
             >
               กลับหน้าจัดการ (Dashboard)
             </button>

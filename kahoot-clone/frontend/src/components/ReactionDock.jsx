@@ -15,7 +15,7 @@ export default function ReactionDock({ pin, nickname }) {
 
   return (
     <div className="player-reaction-dock">
-      <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#6b7280', marginRight: '4px' }}>
+      <span className="reaction-dock-label" style={{ fontSize: '0.85rem', fontWeight: 800, color: '#6b7280', marginRight: '4px' }}>
         เชียร์:
       </span>
       {EMOJIS.map(emoji => (

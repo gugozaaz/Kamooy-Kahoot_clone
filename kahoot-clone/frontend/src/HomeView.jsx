@@ -21,48 +21,76 @@ export default function HomeView() {
   };
 
   return (
-    <div className="home-container game-bg" style={{ backgroundColor: '#ffcc00', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '20px' }}>
+    <div className="home-container game-bg" style={{
+      backgroundColor: '#ffcc00',
+      minHeight: '100vh',
+      minHeight: '100dvh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      padding: '20px 16px',
+      boxSizing: 'border-box'
+    }}>
       <FloatingParticles />
       <SoundToggle />
 
-      <button
-        onClick={() => { sfx.unlock(); sfx.pop(); navigate('/dashboard'); }}
-        className="btn-kamooy btn-kamooy-secondary"
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '80px',
-          padding: '0 24px',
-          height: '46px',
-          borderRadius: '999px',
-          fontWeight: 800,
-          background: '#ffffff',
-          color: '#111827',
-          boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
-          zIndex: 10
-        }}
-      >
-        🛠️ จัดการสื่อ / Host Game
-      </button>
+      {/* Top Bar for Desktop & Mobile */}
+      <div style={{
+        position: 'absolute',
+        top: '16px',
+        right: '72px',
+        zIndex: 10
+      }}>
+        <button
+          onClick={() => { sfx.unlock(); sfx.pop(); navigate('/dashboard'); }}
+          className="btn-kamooy btn-kamooy-secondary"
+          style={{
+            padding: '0 20px',
+            height: '42px',
+            borderRadius: '999px',
+            fontWeight: 800,
+            background: '#ffffff',
+            color: '#111827',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+            fontSize: '0.9rem'
+          }}
+        >
+          🛠️ จัดการสื่อ / Host Game
+        </button>
+      </div>
 
-      <div style={{ textAlign: 'center', marginBottom: '28px', position: 'relative', zIndex: 1 }}>
-        <h1 style={{ fontSize: '5rem', color: '#fff', textShadow: '4px 4px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000', margin: 0, letterSpacing: '2px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative', zIndex: 1, maxWidth: '90%' }}>
+        <h1 style={{
+          fontSize: 'clamp(3rem, 10vw, 5rem)',
+          color: '#fff',
+          textShadow: '4px 4px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000',
+          margin: 0,
+          letterSpacing: '2px',
+          lineHeight: 1.15
+        }}>
           Kamooy!
         </h1>
-        <p style={{ color: '#1f2937', fontSize: '1.3rem', fontWeight: 800, margin: '8px 0 0 0' }}>
+        <p style={{
+          color: '#1f2937',
+          fontSize: 'clamp(1rem, 3.6vw, 1.3rem)',
+          fontWeight: 800,
+          margin: '10px 0 0 0'
+        }}>
           เกมตอบคำถามสุดมันส์ เล่นพร้อมกันได้ทุกคน 🚀
         </p>
       </div>
 
       <form onSubmit={handleJoin} style={{
         backgroundColor: '#fff',
-        padding: '30px 24px',
+        padding: '28px 20px',
         borderRadius: '24px',
         boxShadow: '0 12px 36px rgba(0,0,0,0.22)',
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        maxWidth: '340px',
+        maxWidth: '350px',
         position: 'relative',
         zIndex: 1,
         boxSizing: 'border-box'
@@ -74,8 +102,8 @@ export default function HomeView() {
           onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
           maxLength={6}
           style={{
-            padding: '16px',
-            fontSize: '1.6rem',
+            padding: '14px',
+            fontSize: 'clamp(1.4rem, 5vw, 1.7rem)',
             textAlign: 'center',
             marginBottom: '16px',
             border: '3px solid #e5e7eb',
@@ -87,16 +115,12 @@ export default function HomeView() {
         />
         <button
           type="submit"
-          className="btn-primary"
+          className="btn-kamooy btn-kamooy-primary"
           style={{
-            padding: '16px',
-            fontSize: '1.3rem',
-            backgroundColor: '#111827',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '14px',
-            cursor: 'pointer',
-            fontWeight: 900
+            width: '100%',
+            height: '52px',
+            fontSize: '1.25rem',
+            borderRadius: '14px'
           }}
         >
           Enter ➔

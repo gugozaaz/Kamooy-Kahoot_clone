@@ -35,6 +35,16 @@
   box-shadow: none;
 }
 
+@media (max-width: 600px) {
+  .sound-toggle {
+    top: 10px;
+    right: 10px;
+    width: 38px;
+    height: 38px;
+    font-size: 1.15rem;
+  }
+}
+
 /* Animated background: slow drifting glow behind every game screen. */
 .game-bg {
   position: relative;
@@ -802,24 +812,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20px;
+  border-radius: 18px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.28), 0 14px 24px rgba(0, 0, 0, 0.2);
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.28), 0 10px 20px rgba(0, 0, 0, 0.18);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  width: 100%;
+  height: 100%;
 }
 .pad-btn-arcade:active {
-  transform: translateY(6px);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28), 0 6px 12px rgba(0, 0, 0, 0.18);
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28), 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 .pad-btn-arcade.tapped {
-  animation: buttonPulse 0.4s ease;
+  animation: buttonPulse 0.3s ease;
 }
 @keyframes buttonPulse {
   0% { transform: scale(1); }
-  50% { transform: scale(0.94); }
+  50% { transform: scale(0.96); }
   100% { transform: scale(1); }
 }
 
@@ -868,15 +881,27 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
-  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  padding: 8px 16px;
   border-radius: 999px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 3px 0 #e5e7eb;
-  margin: 10px auto;
+  margin: 8px auto;
   width: fit-content;
-  max-width: 95%;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  max-width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .player-reaction-dock {
+    gap: 6px;
+    padding: 6px 10px;
+    margin: 6px auto;
+  }
+  .player-reaction-dock .reaction-dock-label {
+    display: none !important;
+  }
 }
 
 .reaction-btn {
@@ -904,16 +929,32 @@
   box-shadow: 0 1px 0 #d1d5db;
 }
 
+@media (max-width: 600px) {
+  .reaction-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.25rem;
+  }
+}
+
 /* --- Tactical Power-Ups Bar ---------------------------------------------- */
 
 .powerup-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin: 12px auto;
+  gap: 10px;
+  margin: 8px auto;
   max-width: 500px;
   width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .powerup-bar {
+    gap: 6px;
+    margin: 6px auto;
+  }
 }
 
 .powerup-btn {
@@ -921,18 +962,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 10px 12px;
+  gap: 5px;
+  padding: 10px 10px;
   background: #ffffff;
   border: 2px solid #e5e7eb;
-  border-radius: 14px;
+  border-radius: 12px;
   font-weight: 800;
   font-size: 0.9rem;
   color: #1f2937;
   cursor: pointer;
-  box-shadow: 0 4px 0 #d1d5db, 0 4px 10px rgba(0,0,0,0.06);
+  box-shadow: 0 3px 0 #d1d5db, 0 4px 8px rgba(0,0,0,0.06);
   transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s;
   user-select: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .powerup-btn {
+    padding: 6px 4px;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    gap: 3px;
+  }
 }
 .powerup-btn:not(:disabled):hover {
   transform: translateY(-2px);
@@ -1016,14 +1067,15 @@
   transform: translateY(3px);
 }
 
-/* --- Balanced Player Pad Grid -------------------------------------------- */
+/* --- Balanced Player Pad Grid (Mobile Portrait) -------------------------- */
 
 .balanced-pad-grid-2 {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
   height: 100%;
+  flex: 1;
 }
 .balanced-pad-grid-2 .pad-btn-arcade {
   flex: 1;
@@ -1033,9 +1085,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
   height: 100%;
+  flex: 1;
 }
 .balanced-pad-grid-3 .pad-btn-arcade:nth-child(3) {
   grid-column: 1 / -1;
@@ -1045,9 +1098,62 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
   height: 100%;
+  flex: 1;
+}
+
+/* --- Host Desktop Grid Helpers (Landscape Widescreen) -------------------- */
+
+.host-choices-container {
+  margin-top: auto;
+  width: 100%;
+}
+
+.host-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(12px, 1.8vw, 24px);
+}
+
+.host-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(12px, 1.8vw, 24px);
+}
+
+.host-grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(12px, 1.8vw, 24px);
+}
+
+.host-grid-more {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(10px, 1.4vw, 18px);
+}
+
+/* Host Lobby Players Grid Scrollable */
+.players-grid-scroll {
+  max-height: 40vh;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  max-width: 1000px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+.players-grid-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.players-grid-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
 }
 
 /* Streak Screen Glow */

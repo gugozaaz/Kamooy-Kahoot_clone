@@ -250,7 +250,7 @@ export default function PlayerView() {
   // 1. Not joined: Arcade login screen
   if (!joined) {
     return (
-      <div className="player-container game-bg" style={{ backgroundColor: '#ffcc00', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative' }}>
+      <div className="player-container game-bg player-scrollable" style={{ backgroundColor: '#ffcc00', minHeight: '100vh', minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 16px', position: 'relative' }}>
         <FloatingParticles />
         <SoundToggle />
 
@@ -264,24 +264,24 @@ export default function PlayerView() {
           />
         )}
 
-        <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative', zIndex: 1 }}>
-          <h1 style={{ fontSize: '4.5rem', color: '#fff', textShadow: '3px 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000', margin: 0, letterSpacing: '2px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '20px', position: 'relative', zIndex: 1, maxWidth: '90%' }}>
+          <h1 style={{ fontSize: 'clamp(2.8rem, 8vw, 4.5rem)', color: '#fff', textShadow: '3px 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000', margin: 0, letterSpacing: '2px', lineHeight: 1.15 }}>
             Kamooy!
           </h1>
-          <p style={{ color: '#333', fontSize: '1.2rem', fontWeight: 800, margin: '8px 0 0 0' }}>
+          <p style={{ color: '#333', fontSize: 'clamp(1rem, 3.5vw, 1.2rem)', fontWeight: 800, margin: '8px 0 0 0' }}>
             ประลองปัญญา ท้าความเร็ว ⚡
           </p>
         </div>
 
         <form className="join-form" onSubmit={handleJoin} style={{
           backgroundColor: '#fff',
-          padding: '28px',
+          padding: '24px 20px',
           borderRadius: '24px',
           boxShadow: '0 12px 36px rgba(0,0,0,0.22)',
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
-          maxWidth: '360px',
+          maxWidth: '350px',
           position: 'relative',
           zIndex: 1,
           boxSizing: 'border-box'
@@ -296,7 +296,7 @@ export default function PlayerView() {
               placeholder="Game PIN (เลข 6 หลัก)"
               value={pin}
               onChange={e => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              style={{ marginBottom: '14px', fontSize: '1.3rem', textAlign: 'center', fontWeight: 'bold' }}
+              style={{ marginBottom: '14px', fontSize: '1.25rem', textAlign: 'center', fontWeight: 'bold' }}
               maxLength={6}
             />
           )}
@@ -306,7 +306,7 @@ export default function PlayerView() {
             placeholder="ใส่ชื่อเล่นของคุณ (Nickname)"
             value={nickname}
             onChange={e => setNickname(e.target.value)}
-            style={{ marginBottom: '14px', fontSize: '1.2rem', textAlign: 'center', fontWeight: 'bold' }}
+            style={{ marginBottom: '14px', fontSize: '1.15rem', textAlign: 'center', fontWeight: 'bold' }}
             maxLength={18}
           />
 
@@ -317,9 +317,9 @@ export default function PlayerView() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '18px',
+              marginBottom: '16px',
               background: '#f8fafc',
-              padding: '10px 14px',
+              padding: '8px 12px',
               borderRadius: '16px',
               border: '2px dashed #cbd5e1',
               cursor: 'pointer',
@@ -328,25 +328,25 @@ export default function PlayerView() {
             title="คลิกเพื่อเลือกอวาตาร์ & ฉายา"
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div className="avatar-bubble" style={{ background: currentAvatar.bg, width: '42px', height: '42px', fontSize: '1.5rem' }}>
+              <div className="avatar-bubble" style={{ background: currentAvatar.bg, width: '40px', height: '40px', fontSize: '1.4rem' }}>
                 {customEmoji || currentAvatar.emoji}
               </div>
               <div style={{ textAlign: 'left' }}>
-                <span style={{ display: 'block', fontWeight: 800, color: '#1f2937', fontSize: '0.95rem' }}>
+                <span style={{ display: 'block', fontWeight: 800, color: '#1f2937', fontSize: '0.9rem' }}>
                   {customTitle}
                 </span>
-                <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
+                <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>
                   คลิกเพื่อเปลี่ยนตัวละคร
                 </span>
               </div>
             </div>
-            <span style={{ fontSize: '1.1rem' }}>✏️</span>
+            <span style={{ fontSize: '1rem' }}>✏️</span>
           </div>
 
           <button
             className="btn-kamooy btn-kamooy-primary"
             type="submit"
-            style={{ width: '100%', height: '52px', fontSize: '1.25rem', borderRadius: '14px' }}
+            style={{ width: '100%', height: '50px', fontSize: '1.2rem', borderRadius: '14px' }}
           >
             เข้าสู่เกม ➔
           </button>
@@ -358,49 +358,49 @@ export default function PlayerView() {
   // 2. LOBBY: Waiting for host
   if (gameState === 'LOBBY') {
     return (
-      <div className="player-container game-bg" style={{ backgroundColor: 'var(--kahoot-green)', color: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative' }}>
+      <div className="player-container game-bg player-scrollable" style={{ backgroundColor: 'var(--kahoot-green)', color: 'white', minHeight: '100vh', minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 16px', position: 'relative' }}>
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
         <SoundToggle />
 
-        <div className="status-message" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+        <div className="status-message" style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: '380px' }}>
           <div
             className="podium-avatar-circle"
             style={{
               background: currentAvatar.bg,
-              width: '96px',
-              height: '96px',
-              fontSize: '3.4rem',
-              margin: '0 auto 16px',
+              width: 'clamp(76px, 20vw, 96px)',
+              height: 'clamp(76px, 20vw, 96px)',
+              fontSize: 'clamp(2.8rem, 8vw, 3.4rem)',
+              margin: '0 auto 12px',
               animation: 'trophyIn 0.6s ease both, floatY 2.6s ease-in-out infinite'
             }}
           >
             {customEmoji || currentAvatar.emoji}
           </div>
 
-          <h2 style={{ fontSize: '2.4rem', margin: '0 0 6px 0', fontWeight: 900 }}>
+          <h2 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.4rem)', margin: '0 0 6px 0', fontWeight: 900, lineHeight: 1.2 }}>
             ยินดีต้อนรับ {nickname}!
           </h2>
-          <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.2)', padding: '4px 16px', borderRadius: '999px', fontSize: '1.05rem', fontWeight: 800, marginBottom: '14px' }}>
+          <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.2)', padding: '4px 14px', borderRadius: '999px', fontSize: '0.95rem', fontWeight: 800, marginBottom: '10px' }}>
             ฉายา: {customTitle}
           </div>
-          <p style={{ fontSize: '1.2rem', opacity: 0.95, margin: 0, fontWeight: 700 }}>
+          <p style={{ fontSize: 'clamp(1rem, 3.5vw, 1.2rem)', opacity: 0.95, margin: 0, fontWeight: 700 }}>
             คุณเข้าร่วมห้องสำเร็จแล้ว 🎉
           </p>
 
-          <div className="radar-scanner-box">
+          <div className="radar-scanner-box" style={{ width: '130px', height: '130px', margin: '14px auto' }}>
             <div className="radar-ring" />
             <div className="radar-ring" />
             <div className="radar-ring" />
-            <div className="radar-center-icon">🎮</div>
+            <div className="radar-center-icon" style={{ fontSize: '2.8rem' }}>🎮</div>
           </div>
 
-          <div className="waiting-dots-inline" style={{ fontSize: '1.2rem', marginTop: '14px', fontWeight: 700, opacity: 0.9 }}>
+          <div className="waiting-dots-inline" style={{ fontSize: '1.1rem', marginTop: '10px', fontWeight: 700, opacity: 0.9 }}>
             รอโฮสต์กดเริ่มเกม
           </div>
 
           {/* Player Live Emoji Dock */}
-          <div style={{ marginTop: '24px' }}>
+          <div style={{ marginTop: '16px' }}>
             <ReactionDock pin={pin} nickname={nickname} />
           </div>
         </div>
@@ -412,30 +412,30 @@ export default function PlayerView() {
   if (gameState === 'QUESTION_PREVIEW') {
     const is321 = previewTimeLeft <= 3 && previewTimeLeft > 0;
     return (
-      <div className="player-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', backgroundColor: 'var(--theme-yellow)', overflow: 'hidden' }}>
+      <div className="player-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', height: '100dvh', maxHeight: '100dvh', padding: '16px', backgroundColor: 'var(--theme-yellow)', overflow: 'hidden' }}>
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
         <SoundToggle />
 
-        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', width: '90%', maxWidth: '600px' }}>
-          <div style={{ display: 'inline-block', background: 'rgba(0,0,0,0.18)', color: '#333', padding: '6px 20px', borderRadius: '999px', fontSize: '1.1rem', fontWeight: 800, marginBottom: '16px' }}>
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', width: '100%', maxWidth: '440px' }}>
+          <div style={{ display: 'inline-block', background: 'rgba(0,0,0,0.18)', color: '#333', padding: '4px 16px', borderRadius: '999px', fontSize: '0.95rem', fontWeight: 800, marginBottom: '14px' }}>
             ⚡ คำถามข้อที่ {(state?.currentIndex || 0) + 1}
           </div>
 
-          <div className="preview-question" style={{ backgroundColor: '#ffffff', padding: '20px 24px', borderRadius: '16px', boxShadow: '0 6px 18px rgba(0,0,0,0.15)', fontSize: '2rem', fontWeight: 800, color: '#1f2937', marginBottom: '28px', width: '100%', boxSizing: 'border-box' }}>
+          <div className="preview-question" style={{ backgroundColor: '#ffffff', padding: '16px 20px', borderRadius: '16px', boxShadow: '0 6px 18px rgba(0,0,0,0.15)', fontSize: 'clamp(1.2rem, 4.5vw, 1.8rem)', fontWeight: 800, color: '#1f2937', marginBottom: '20px', width: '100%', boxSizing: 'border-box' }}>
             {currentQuestion?.text}
           </div>
 
-          <div style={{ minHeight: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+          <div style={{ minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
             {is321 ? (
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div key={`wave-${previewTimeLeft}`} className="countdown-shockwave" />
-                <span key={`count-${previewTimeLeft}`} className="countdown-pop-321" style={{ fontSize: '7rem' }}>
+                <div key={`wave-${previewTimeLeft}`} className="countdown-shockwave" style={{ width: '110px', height: '110px' }} />
+                <span key={`count-${previewTimeLeft}`} className="countdown-pop-321" style={{ fontSize: 'clamp(5rem, 16vw, 7rem)' }}>
                   {previewTimeLeft}
                 </span>
               </div>
             ) : previewTimeLeft === 0 ? (
-              <span className="countdown-pop-321" style={{ fontSize: '5rem', color: '#26890c' }}>GO!</span>
+              <span className="countdown-pop-321" style={{ fontSize: '4.5rem', color: '#26890c' }}>GO!</span>
             ) : (
               <div className="preview-dots"><span /><span /><span /></div>
             )}
@@ -448,41 +448,41 @@ export default function PlayerView() {
   // 4. QUESTION_ACTIVE - Submitted (Answer Locked)
   if (gameState === 'QUESTION_ACTIVE' && submitted) {
     return (
-      <div className="player-container game-bg" style={{ backgroundColor: 'var(--theme-yellow)', color: '#333', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative' }}>
+      <div className="player-container game-bg" style={{ backgroundColor: 'var(--theme-yellow)', color: '#333', height: '100vh', height: '100dvh', maxHeight: '100dvh', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', position: 'relative' }}>
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
         <SoundToggle />
 
         {streak >= 2 && <div className="streak-fire-border" />}
 
-        <div className="status-message" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <div className="radar-scanner-box">
+        <div className="status-message" style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: '380px' }}>
+          <div className="radar-scanner-box" style={{ width: '130px', height: '130px', margin: '12px auto' }}>
             <div className="radar-ring" />
             <div className="radar-ring" />
-            <div className="radar-center-icon">🔒</div>
+            <div className="radar-center-icon" style={{ fontSize: '2.8rem' }}>🔒</div>
           </div>
 
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 900, margin: '0 0 10px 0', color: '#1f2937' }}>
+          <h2 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.3rem)', fontWeight: 900, margin: '0 0 8px 0', color: '#1f2937' }}>
             ส่งคำตอบแล้ว!
           </h2>
 
           {activePowerup && (
-            <div style={{ display: 'inline-block', background: '#fef08a', color: '#854d0e', border: '2px solid #ca8a04', padding: '6px 18px', borderRadius: '999px', fontSize: '1rem', fontWeight: 800, margin: '6px 0' }}>
+            <div style={{ display: 'inline-block', background: '#fef08a', color: '#854d0e', border: '2px solid #ca8a04', padding: '4px 14px', borderRadius: '999px', fontSize: '0.9rem', fontWeight: 800, margin: '4px 0' }}>
               {activePowerup === '2x' ? '🌟 ใช้พลังคะแนนคูณสอง!' : '🛡️ เปิดเกราะป้องกันคอมโบ!'}
             </div>
           )}
 
           {answerTimeSeconds && (
-            <div style={{ display: 'inline-block', background: 'rgba(0,0,0,0.12)', padding: '6px 18px', borderRadius: '999px', fontSize: '1.2rem', fontWeight: 800, color: '#111827', margin: '8px 0 16px 0' }}>
+            <div style={{ display: 'inline-block', background: 'rgba(0,0,0,0.12)', padding: '5px 16px', borderRadius: '999px', fontSize: '1.05rem', fontWeight: 800, color: '#111827', margin: '6px 0 12px 0' }}>
               ⚡ ตอบในเวลา: {answerTimeSeconds} วินาที!
             </div>
           )}
 
-          <div className="waiting-dots-inline" style={{ fontSize: '1.2rem', fontWeight: 700, color: '#4b5563' }}>
+          <div className="waiting-dots-inline" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#4b5563' }}>
             รอลุ้นเฉลยพร้อมเพื่อนๆ
           </div>
 
-          <div style={{ marginTop: '24px' }}>
+          <div style={{ marginTop: '18px' }}>
             <ReactionDock pin={pin} nickname={nickname} />
           </div>
         </div>
@@ -490,33 +490,44 @@ export default function PlayerView() {
     );
   }
 
-  // 5. QUESTION_ACTIVE - Not submitted (Arcade Game Controller Pad)
+  // 5. QUESTION_ACTIVE - Not submitted (Arcade Game Controller Pad - Smartphone Portrait First)
   if (gameState === 'QUESTION_ACTIVE' && !submitted) {
     const choicesCount = currentQuestion?.choicesCount || 4;
     const gridLayoutClass = choicesCount === 2 ? 'balanced-pad-grid-2' : choicesCount === 3 ? 'balanced-pad-grid-3' : 'balanced-pad-grid-4';
 
     return (
-      <div className="player-container game-bg" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: '16px', position: 'relative' }}>
+      <div className="player-container game-bg" style={{
+        height: '100vh',
+        height: '100dvh',
+        maxHeight: '100dvh',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: '10px 12px',
+        position: 'relative',
+        boxSizing: 'border-box'
+      }}>
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
         <SoundToggle />
 
         {streak >= 2 && <div className="streak-fire-border" />}
 
-        {/* Top Header / Streak info */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '6px 0', position: 'relative', zIndex: 1 }}>
-          <span style={{ background: 'rgba(255,255,255,0.92)', color: '#111827', padding: '6px 16px', borderRadius: '999px', fontSize: '1rem', fontWeight: 800, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        {/* Top Header / Streak info with safe right padding for SoundToggle */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0', paddingRight: '48px', position: 'relative', zIndex: 1 }}>
+          <span style={{ background: 'rgba(255,255,255,0.92)', color: '#111827', padding: '4px 14px', borderRadius: '999px', fontSize: '0.9rem', fontWeight: 800, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
             🎮 เลือกคำตอบ
           </span>
 
           {streak >= 2 && (
-            <span className="streak-badge" style={{ margin: 0, padding: '6px 16px', fontSize: '1rem' }}>
+            <span className="streak-badge" style={{ margin: 0, padding: '4px 14px', fontSize: '0.9rem' }}>
               🔥 {streak} Streak!
             </span>
           )}
         </div>
 
-        {/* Tactical Power-Ups Bar */}
+        {/* Tactical Power-Ups Bar (Compact on smartphone) */}
         <div className="powerup-bar" style={{ position: 'relative', zIndex: 1 }}>
           <button
             type="button"
@@ -525,7 +536,7 @@ export default function PlayerView() {
             className={`powerup-btn${eliminatedChoices.length > 0 ? ' active-glow' : ''}`}
             title="ตัด 2 คำตอบที่ผิดออก (ใช้ได้ 1 ครั้ง)"
           >
-            ⚡ 50:50 {powerupsUsed.fiftyFifty ? '(ใช้แล้ว)' : ''}
+            ⚡ 50:50 {powerupsUsed.fiftyFifty ? '✓' : ''}
           </button>
 
           <button
@@ -535,7 +546,7 @@ export default function PlayerView() {
             className={`powerup-btn${activePowerup === '2x' ? ' active-glow' : ''}`}
             title="คะแนนสองเท่าในข้อนี้ (ใช้ได้ 1 ครั้ง)"
           >
-            🌟 คะแนน x2 {powerupsUsed.doublePoints ? '(ใช้แล้ว)' : ''}
+            🌟 x2 {powerupsUsed.doublePoints ? '✓' : ''}
           </button>
 
           <button
@@ -545,12 +556,12 @@ export default function PlayerView() {
             className={`powerup-btn${activePowerup === 'shield' ? ' active-glow' : ''}`}
             title="เกราะป้องกันคอมโบไม่ให้หลุดหากตอบผิด (ใช้ได้ 1 ครั้ง)"
           >
-            🛡️ เกราะกันคอมโบ {powerupsUsed.streakShield ? '(ใช้แล้ว)' : ''}
+            🛡️ ป้องกัน {powerupsUsed.streakShield ? '✓' : ''}
           </button>
         </div>
 
-        {/* Symmetrically Balanced Pad Grid */}
-        <div style={{ flex: 1, position: 'relative', zIndex: 1, margin: '10px 0', minHeight: '320px' }}>
+        {/* Symmetrically Balanced Pad Grid - Fills 100% available space */}
+        <div style={{ flex: 1, minHeight: 0, position: 'relative', zIndex: 1, margin: '6px 0', display: 'flex', flexDirection: 'column' }}>
           <div className={gridLayoutClass}>
             {Array.from({ length: choicesCount }).map((_, i) => {
               const isEliminated = eliminatedChoices.includes(i);
@@ -559,11 +570,10 @@ export default function PlayerView() {
                   key={i}
                   disabled={isEliminated}
                   className={`pad-btn pad-btn-arcade c-${i % 6}${tappedIndex === i ? ' tapped' : ''}${isEliminated ? ' pad-btn-eliminated' : ''}`}
-                  style={{ animationDelay: `${i * 0.06}s`, minHeight: choicesCount <= 2 ? '160px' : '130px' }}
                   aria-label={`Answer ${i + 1}`}
                   onClick={() => selectChoice(i)}
                 >
-                  <span className="pad-symbol" style={{ fontSize: choicesCount <= 2 ? '5.5rem' : '4.5rem' }}>
+                  <span className="pad-symbol" style={{ fontSize: choicesCount <= 2 ? 'clamp(4.5rem, 15vw, 6rem)' : 'clamp(3.8rem, 12vw, 5rem)' }}>
                     {isEliminated ? '✕' : CHOICE_SYMBOLS[i % CHOICE_SYMBOLS.length]}
                   </span>
                 </button>
@@ -573,7 +583,9 @@ export default function PlayerView() {
         </div>
 
         {/* Reaction Dock */}
-        <ReactionDock pin={pin} nickname={nickname} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <ReactionDock pin={pin} nickname={nickname} />
+        </div>
       </div>
     );
   }
@@ -584,17 +596,19 @@ export default function PlayerView() {
 
     return (
       <div
-        className={`player-container game-bg ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`}
+        className={`player-container game-bg player-scrollable ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`}
         style={{
           backgroundColor: isCorrect ? 'var(--kahoot-green)' : 'var(--kahoot-red)',
           color: 'white',
           minHeight: '100vh',
+          minHeight: '100dvh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '24px',
-          position: 'relative'
+          padding: '20px 16px',
+          position: 'relative',
+          boxSizing: 'border-box'
         }}
       >
         <FloatingParticles />
@@ -604,36 +618,36 @@ export default function PlayerView() {
 
         {streak >= 2 && <div className="streak-fire-border" />}
 
-        <div className="status-message" style={{ animation: 'none', position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <span className="feedback-icon" style={{ fontSize: '6rem' }}>{isCorrect ? '🎉' : '💥'}</span>
+        <div className="status-message" style={{ animation: 'none', position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: '400px', width: '100%' }}>
+          <span className="feedback-icon" style={{ fontSize: 'clamp(4rem, 13vw, 5.5rem)' }}>{isCorrect ? '🎉' : '💥'}</span>
 
-          <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 10px 0' }}>
+          <h2 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.6rem)', fontWeight: 900, margin: '4px 0 10px 0', lineHeight: 1.2 }}>
             {isCorrect ? 'ถูกต้องแล้ว!' : 'ยังไม่ถูกนะ!'}
           </h2>
 
           {isCorrect && pointsGained > 0 && (
-            <div className="score-pop" style={{ fontSize: '3.2rem', color: '#ffeb3b', textShadow: '0 4px 12px rgba(0,0,0,0.35)' }}>
+            <div className="score-pop" style={{ fontSize: 'clamp(2.2rem, 7vw, 3rem)', color: '#ffeb3b', textShadow: '0 4px 12px rgba(0,0,0,0.35)' }}>
               +{pointsGained} คะแนน {activePowerup === '2x' ? ' (x2 Booster!)' : ''}
             </div>
           )}
 
           {isCorrect && streak >= 2 && (
-            <div style={{ marginTop: '16px' }}>
-              <span className="streak-badge" style={{ fontSize: '1.4rem', padding: '10px 24px' }}>
+            <div style={{ marginTop: '12px' }}>
+              <span className="streak-badge" style={{ fontSize: 'clamp(1rem, 3.5vw, 1.25rem)', padding: '8px 20px' }}>
                 🔥 STREAK COMBO x{streak}! กำลังไฟลุก!
               </span>
             </div>
           )}
 
           {!isCorrect && (
-            <div style={{ marginTop: '16px', fontSize: '1.3rem', fontWeight: 700, opacity: 0.95 }}>
+            <div style={{ marginTop: '12px', fontSize: '1.1rem', fontWeight: 700, opacity: 0.95 }}>
               {shieldProtected && (
-                <div style={{ background: '#ca8a04', color: '#fff', padding: '8px 18px', borderRadius: '12px', display: 'inline-block', marginBottom: '12px', fontWeight: 800 }}>
+                <div style={{ background: '#ca8a04', color: '#fff', padding: '8px 16px', borderRadius: '12px', display: 'inline-block', marginBottom: '10px', fontWeight: 800, fontSize: '0.95rem' }}>
                   🛡️ คอมโบยังอยู่! Streak Shield ปกป้องคะแนนต่อเนื่องของคุณไว้!
                 </div>
               )}
               {resultData?.correctAnswers?.length > 0 && (
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 20px', borderRadius: '12px', display: 'inline-block', marginBottom: '10px' }}>
+                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 16px', borderRadius: '12px', display: 'inline-block', marginBottom: '8px' }}>
                   💡 ข้อที่ถูกคือ: {CHOICE_NAMES[resultData.correctAnswers[0]] || 'คำตอบที่ถูก'}
                 </div>
               )}
@@ -642,14 +656,14 @@ export default function PlayerView() {
           )}
 
           {myRank && (
-            <div style={{ marginTop: '20px' }}>
-              <span className="rank-plate">
+            <div style={{ marginTop: '18px' }}>
+              <span className="rank-plate" style={{ fontSize: 'clamp(1.1rem, 4vw, 1.3rem)' }}>
                 🏆 คุณอยู่อันดับที่ #{myRank}
               </span>
             </div>
           )}
 
-          <div style={{ marginTop: '24px' }}>
+          <div style={{ marginTop: '20px' }}>
             <ReactionDock pin={pin} nickname={nickname} />
           </div>
         </div>
@@ -660,14 +674,14 @@ export default function PlayerView() {
   // 7. QUESTION_LEADERBOARD: Personal score progress
   if (gameState === 'QUESTION_LEADERBOARD') {
     return (
-      <div className="player-container game-bg" style={{ backgroundColor: 'var(--theme-yellow)', color: '#333', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative' }}>
+      <div className="player-container game-bg player-scrollable" style={{ backgroundColor: 'var(--theme-yellow)', color: '#333', minHeight: '100vh', minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 16px', position: 'relative', boxSizing: 'border-box' }}>
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
         <SoundToggle />
 
         {streak >= 2 && <div className="streak-fire-border" />}
 
-        <div className="status-message" style={{ animation: 'none', position: 'relative', zIndex: 1, textAlign: 'center', background: 'rgba(255,255,255,0.95)', padding: '36px 28px', borderRadius: '24px', boxShadow: '0 12px 30px rgba(0,0,0,0.18)', width: '100%', maxWidth: '380px' }}>
+        <div className="status-message" style={{ animation: 'none', position: 'relative', zIndex: 1, textAlign: 'center', background: 'rgba(255,255,255,0.95)', padding: 'clamp(24px, 6vw, 36px) clamp(16px, 5vw, 28px)', borderRadius: '24px', boxShadow: '0 12px 30px rgba(0,0,0,0.18)', width: '100%', maxWidth: '380px', boxSizing: 'border-box' }}>
           <div className="avatar-bubble" style={{ background: currentAvatar.bg, width: '68px', height: '68px', fontSize: '2.6rem', margin: '0 auto 12px' }}>
             {customEmoji || currentAvatar.emoji}
           </div>
@@ -682,11 +696,11 @@ export default function PlayerView() {
           <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#6b7280' }}>
             คะแนนสะสมของคุณ
           </div>
-          <AnimatedScore value={myScore} size="3.5rem" />
+          <AnimatedScore value={myScore} size="clamp(2.8rem, 8vw, 3.5rem)" />
 
           {myRank && (
-            <div style={{ marginTop: '16px' }}>
-              <span className="rank-plate" style={{ background: '#f3f4f6', color: '#111827', fontSize: '1.3rem', padding: '8px 20px' }}>
+            <div style={{ marginTop: '14px' }}>
+              <span className="rank-plate" style={{ background: '#f3f4f6', color: '#111827', fontSize: 'clamp(1.1rem, 3.8vw, 1.3rem)', padding: '8px 20px' }}>
                 🏅 อันดับที่ #{myRank}
               </span>
             </div>
@@ -694,13 +708,13 @@ export default function PlayerView() {
 
           {streak >= 2 && (
             <div style={{ marginTop: '14px' }}>
-              <span className="streak-badge" style={{ fontSize: '1.1rem', padding: '6px 18px' }}>
+              <span className="streak-badge" style={{ fontSize: '1.05rem', padding: '6px 18px' }}>
                 🔥 {streak} Streak
               </span>
             </div>
           )}
 
-          <div style={{ marginTop: '20px' }}>
+          <div style={{ marginTop: '18px' }}>
             <ReactionDock pin={pin} nickname={nickname} />
           </div>
         </div>
@@ -714,41 +728,41 @@ export default function PlayerView() {
     const podium = rank && rank <= 3;
 
     return (
-      <div className="player-container game-bg" style={{ backgroundColor: podium ? 'var(--kahoot-green)' : 'var(--kahoot-purple)', color: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative' }}>
+      <div className="player-container game-bg player-scrollable" style={{ backgroundColor: podium ? 'var(--kahoot-green)' : 'var(--kahoot-purple)', color: 'white', minHeight: '100vh', minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 16px', position: 'relative', boxSizing: 'border-box' }}>
         <SoundToggle />
         <FloatingReactions reactions={state?.reactions} />
         <Confetti count={podium ? 220 : 100} duration={8000} />
         <FloatingParticles />
 
-        <div className="status-message" style={{ animation: 'none', position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <span className="trophy" style={{ fontSize: '6.5rem' }}>{podium ? '🏆' : '🎮'}</span>
+        <div className="status-message" style={{ animation: 'none', position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: '420px', width: '100%' }}>
+          <span className="trophy" style={{ fontSize: 'clamp(4rem, 13vw, 6rem)' }}>{podium ? '🏆' : '🎮'}</span>
 
-          <h1 style={{ fontSize: '3rem', fontWeight: 900, margin: '10px 0' }}>
+          <h1 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.6rem)', fontWeight: 900, margin: '8px 0', lineHeight: 1.2 }}>
             {podium ? 'ยินดีด้วย! คุณติดอันดับท็อป!' : 'จบเกมแล้ว! เก่งมาก!'}
           </h1>
 
-          <div style={{ fontSize: '1.3rem', opacity: 0.95 }}>คะแนนรวมสุดท้ายของคุณ</div>
-          <AnimatedScore value={finalResult?.myScore ?? myScore} size="3.8rem" />
+          <div style={{ fontSize: '1.2rem', opacity: 0.95 }}>คะแนนรวมสุดท้ายของคุณ</div>
+          <AnimatedScore value={finalResult?.myScore ?? myScore} size="clamp(3rem, 9vw, 3.8rem)" />
 
           {rank ? (
-            <div style={{ marginTop: '16px' }}>
-              <span className="rank-plate" style={{ fontSize: '1.8rem', background: '#ffd700', color: '#111827', fontWeight: 900 }}>
+            <div style={{ marginTop: '14px' }}>
+              <span className="rank-plate" style={{ fontSize: 'clamp(1.3rem, 4.5vw, 1.7rem)', background: '#ffd700', color: '#111827', fontWeight: 900 }}>
                 🎖️ อันดับที่ #{rank}
               </span>
             </div>
           ) : null}
 
-          <div style={{ marginTop: '28px' }}>
+          <div style={{ marginTop: '24px' }}>
             <button
               className="btn-kamooy btn-kamooy-secondary"
-              style={{ fontSize: '1.2rem', padding: '0 36px', height: '52px', borderRadius: '999px', background: '#ffffff', color: '#111827' }}
+              style={{ fontSize: '1.15rem', padding: '0 32px', height: '50px', borderRadius: '999px', background: '#ffffff', color: '#111827' }}
               onClick={() => navigate('/')}
             >
               กลับหน้าแรก
             </button>
           </div>
 
-          <div style={{ marginTop: '24px' }}>
+          <div style={{ marginTop: '20px' }}>
             <ReactionDock pin={pin} nickname={nickname} />
           </div>
         </div>

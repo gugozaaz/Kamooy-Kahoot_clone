@@ -19,20 +19,45 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.host-container, .player-container {
+/* Host Container - Desktop Landscape First */
+.host-container {
   min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.host-container {
   background-color: #ffcc00;
   color: #333;
+  padding: clamp(12px, 2vh, 24px);
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Player Container - Smartphone Portrait First */
+.player-container {
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  touch-action: manipulation;
+}
+
+.player-scrollable {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Host Lobby */
