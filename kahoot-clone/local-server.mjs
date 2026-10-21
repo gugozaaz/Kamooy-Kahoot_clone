@@ -11,6 +11,7 @@ import joinGameHandler from './frontend/api/join-game.js';
 import gameStateHandler from './frontend/api/game-state.js';
 import hostActionHandler from './frontend/api/host-action.js';
 import submitAnswerHandler from './frontend/api/submit-answer.js';
+import sendReactionHandler from './frontend/api/send-reaction.js';
 
 const routes = {
   '/api/create-game': createGameHandler,
@@ -18,6 +19,7 @@ const routes = {
   '/api/game-state': gameStateHandler,
   '/api/host-action': hostActionHandler,
   '/api/submit-answer': submitAnswerHandler,
+  '/api/send-reaction': sendReactionHandler,
 };
 
 const store = await getStore();

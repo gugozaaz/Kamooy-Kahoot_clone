@@ -18,7 +18,22 @@ export const AVATAR_LIST = [
   { emoji: '🐲', label: 'มังกร', bg: 'linear-gradient(135deg, #11998e, #38ef7d)' }
 ];
 
-export function getAvatar(nickname = '') {
+export const PLAYER_TITLES = [
+  '⚡ สายฟ้าแลบ',
+  '🧠 อัจฉริยะ',
+  '🥊 ตัวตึงประจำห้อง',
+  '🎯 เซียนควิซ',
+  '👑 แชมเปี้ยน',
+  '💎 นักล่าคะแนน',
+  '🚀 สปีดรันเนอร์',
+  '🔥 ไฟแรงสูง'
+];
+
+export function getAvatar(nickname = '', customEmoji = null) {
+  if (customEmoji) {
+    const found = AVATAR_LIST.find(a => a.emoji === customEmoji);
+    if (found) return found;
+  }
   if (!nickname) return AVATAR_LIST[0];
   let hash = 0;
   for (let i = 0; i < nickname.length; i++) {

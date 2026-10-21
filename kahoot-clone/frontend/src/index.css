@@ -69,21 +69,91 @@ body {
 
 /* Buttons */
 .btn-primary {
-  background-color: #333;
+  background-color: #111827;
   color: white;
   border: none;
-  padding: 15px 40px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  border-radius: 8px;
+  padding: 14px 32px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  border-radius: 14px;
   cursor: pointer;
-  transition: transform 0.1s, background-color 0.2s;
-  box-shadow: 0 6px 0 #111;
-  margin-top: 30px;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+  box-shadow: 0 5px 0 #000, 0 8px 18px rgba(0,0,0,0.18);
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
 }
 .btn-primary:active {
-  transform: translateY(6px);
-  box-shadow: none;
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #000;
+}
+
+/* Unified Arcade Button System */
+.btn-kamooy {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  user-select: none;
+  white-space: nowrap;
+  transition: transform 0.1s ease, box-shadow 0.12s ease, filter 0.15s ease;
+}
+.btn-kamooy:active {
+  transform: translateY(3px);
+}
+.btn-kamooy:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-kamooy-primary {
+  background-color: #26890c;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #1b6108, 0 6px 14px rgba(38, 137, 12, 0.3);
+}
+.btn-kamooy-primary:active {
+  box-shadow: 0 1px 0 #1b6108;
+}
+
+.btn-kamooy-blue {
+  background-color: #1368ce;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #0c4891, 0 6px 14px rgba(19, 104, 206, 0.35);
+}
+.btn-kamooy-blue:active {
+  box-shadow: 0 1px 0 #0c4891;
+}
+
+.btn-kamooy-secondary {
+  background-color: #ffffff;
+  color: #374151;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 4px 0 #d1d5db, 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+.btn-kamooy-secondary:active {
+  box-shadow: 0 1px 0 #d1d5db;
+}
+
+.btn-kamooy-danger {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  box-shadow: 0 4px 0 #fca5a5;
+}
+.btn-kamooy-danger:active {
+  box-shadow: 0 1px 0 #fca5a5;
 }
 
 /* Question Host View */

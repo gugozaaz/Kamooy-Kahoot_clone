@@ -162,6 +162,23 @@ const effects = {
   drumroll: () => {
     noise({ dur: 0.6, gain: 0.12, from: 800, to: 200 });
   },
+  // Reaction pop
+  reaction: () => {
+    tone({ freq: 950, dur: 0.06, type: 'sine', gain: 0.14, sweepTo: 1400 });
+  },
+  // Airhorn sound
+  airhorn: () => {
+    [NOTE.C5, NOTE.E5, NOTE.G5].forEach(f => {
+      tone({ freq: f, dur: 0.18, type: 'sawtooth', gain: 0.2 });
+      tone({ freq: f, dur: 0.28, type: 'sawtooth', gain: 0.22, at: 0.22 });
+    });
+  },
+  // Crowd cheer / applause
+  applause: () => {
+    noise({ dur: 1.2, gain: 0.18, from: 2500, to: 800 });
+    [NOTE.C5, NOTE.G5, NOTE.C6].forEach((f, i) =>
+      tone({ freq: f, dur: 0.2, type: 'triangle', gain: 0.12, at: 0.1 * i }));
+  },
   // Final scoreboard.
   fanfare: () => {
     const seq = [

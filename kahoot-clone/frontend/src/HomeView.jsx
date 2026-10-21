@@ -27,18 +27,18 @@ export default function HomeView() {
 
       <button
         onClick={() => { sfx.unlock(); sfx.pop(); navigate('/dashboard'); }}
-        className="btn-primary"
+        className="btn-kamooy btn-kamooy-secondary"
         style={{
           position: 'absolute',
           top: '20px',
           right: '80px',
-          padding: '10px 24px',
+          padding: '0 24px',
+          height: '46px',
           borderRadius: '999px',
           fontWeight: 800,
-          cursor: 'pointer',
           background: '#ffffff',
           color: '#111827',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
           zIndex: 10
         }}
       >

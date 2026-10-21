@@ -162,55 +162,140 @@ export default function CreatorView() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f4f4f4' }}>
       
       {/* HEADER */}
-      <div style={{ height: '60px', backgroundColor: '#fff', borderBottom: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px' }}>
+      <div style={{ height: '68px', backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
         <input 
           type="text" 
           value={presentation.title} 
           onChange={(e) => updatePresentation(presentation.slides, e.target.value)}
-          style={{ fontSize: '1.2rem', fontWeight: 'bold', padding: '5px', border: '1px solid #ccc', borderRadius: '4px', width: '300px' }}
+          placeholder="ตั้งชื่อชุดคำถาม..."
+          style={{ fontSize: '1.25rem', fontWeight: 800, padding: '8px 14px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '340px' }}
         />
-        <div>
-          <button onClick={() => navigate('/dashboard')} style={{ marginRight: '10px', padding: '8px 15px', cursor: 'pointer' }}>ยกเลิก</button>
-          <button onClick={saveToStorage} style={{ padding: '8px 15px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>บันทึก</button>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <button 
+            onClick={() => navigate('/dashboard')} 
+            className="btn-kamooy btn-kamooy-secondary"
+          >
+            ยกเลิก
+          </button>
+          <button 
+            onClick={saveToStorage} 
+            className="btn-kamooy btn-kamooy-primary"
+          >
+            💾 บันทึกชุดคำถาม
+          </button>
         </div>
       </div>
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         
         {/* LEFT PANEL - SLIDES LIST */}
-        <div style={{ width: '250px', backgroundColor: '#fff', borderRight: '1px solid #ddd', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ padding: '10px', borderBottom: '1px solid #eee' }}>
-            <button onClick={addSlide} style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-              <Plus size={16} /> เพิ่มสไลด์
+        <div style={{ width: '270px', backgroundColor: '#fff', borderRight: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ padding: '14px', borderBottom: '1px solid #f3f4f6' }}>
+            <button 
+              onClick={addSlide} 
+              className="btn-kamooy btn-kamooy-blue"
+              style={{ width: '100%' }}
+            >
+              <Plus size={18} /> เพิ่มสไลด์คำถาม
             </button>
           </div>
-          <div style={{ flex: 1, overflowY: 'auto', padding: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ flex: 1, overflowY: 'auto', padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {presentation.slides.map((s, idx) => (
               <div 
                 key={s.id} 
                 onClick={() => setActiveSlideId(s.id)}
                 style={{ 
-                  border: `2px solid ${activeSlideId === s.id ? '#007bff' : '#ccc'}`,
-                  borderRadius: '6px',
-                  padding: '10px',
+                  border: `2px solid ${activeSlideId === s.id ? '#1368ce' : '#e5e7eb'}`,
+                  borderRadius: '12px',
+                  padding: '12px',
                   cursor: 'pointer',
-                  backgroundColor: activeSlideId === s.id ? '#eef6ff' : '#fff',
-                  position: 'relative'
+                  backgroundColor: activeSlideId === s.id ? '#eff6ff' : '#fff',
+                  boxShadow: activeSlideId === s.id ? '0 4px 12px rgba(19, 104, 206, 0.15)' : 'none',
+                  transition: 'border-color 0.15s, background 0.15s'
                 }}
               >
-                <div style={{ fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '5px' }}>{idx + 1}. Quiz</div>
-                <div style={{ fontSize: '0.9rem', color: '#555', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#374151', marginBottom: '6px' }}>{idx + 1}. Quiz</div>
+                <div style={{ fontSize: '0.9rem', color: '#1f2937', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {s.question || 'ไม่ได้ตั้งคำถาม'}
                 </div>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                  <div style={{ display: 'flex', gap: '5px' }}>
-                    <button onClick={(e) => moveSlide(e, idx, -1)} disabled={idx===0} style={{ padding: '2px', cursor: idx===0?'not-allowed':'pointer' }}><ArrowUp size={14}/></button>
-                    <button onClick={(e) => moveSlide(e, idx, 1)} disabled={idx===presentation.slides.length-1} style={{ padding: '2px', cursor: idx===presentation.slides.length-1?'not-allowed':'pointer' }}><ArrowDown size={14}/></button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '8px', borderTop: '1px solid #f3f4f6' }}>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <button 
+                      onClick={(e) => moveSlide(e, idx, -1)} 
+                      disabled={idx===0} 
+                      title="เลื่อนขึ้น"
+                      style={{ 
+                        width: '28px', 
+                        height: '28px', 
+                        borderRadius: '6px', 
+                        border: '1px solid #e5e7eb', 
+                        background: '#f9fafb', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        cursor: idx===0?'not-allowed':'pointer',
+                        opacity: idx===0?0.3:1
+                      }}
+                    >
+                      <ArrowUp size={14}/>
+                    </button>
+                    <button 
+                      onClick={(e) => moveSlide(e, idx, 1)} 
+                      disabled={idx===presentation.slides.length-1} 
+                      title="เลื่อนลง"
+                      style={{ 
+                        width: '28px', 
+                        height: '28px', 
+                        borderRadius: '6px', 
+                        border: '1px solid #e5e7eb', 
+                        background: '#f9fafb', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        cursor: idx===presentation.slides.length-1?'not-allowed':'pointer',
+                        opacity: idx===presentation.slides.length-1?0.3:1
+                      }}
+                    >
+                      <ArrowDown size={14}/>
+                    </button>
                   </div>
-                  <div style={{ display: 'flex', gap: '5px' }}>
-                    <button onClick={(e) => duplicateSlide(e, s)} style={{ padding: '2px', cursor: 'pointer' }}><Copy size={14}/></button>
-                    <button onClick={(e) => deleteSlide(e, s.id)} style={{ padding: '2px', cursor: 'pointer', color: 'red' }}><Trash2 size={14}/></button>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <button 
+                      onClick={(e) => duplicateSlide(e, s)} 
+                      title="คัดลอกสไลด์"
+                      style={{ 
+                        width: '28px', 
+                        height: '28px', 
+                        borderRadius: '6px', 
+                        border: '1px solid #e5e7eb', 
+                        background: '#f9fafb', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        cursor: 'pointer' 
+                      }}
+                    >
+                      <Copy size={14}/>
+                    </button>
+                    <button 
+                      onClick={(e) => deleteSlide(e, s.id)} 
+                      title="ลบสไลด์"
+                      style={{ 
+                        width: '28px', 
+                        height: '28px', 
+                        borderRadius: '6px', 
+                        border: '1px solid #fecaca', 
+                        background: '#fee2e2', 
+                        color: '#ef4444', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        cursor: 'pointer' 
+                      }}
+                    >
+                      <Trash2 size={14}/>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -298,8 +383,27 @@ export default function CreatorView() {
 
           <div style={{ marginBottom: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <label style={{ fontWeight: 'bold' }}>คำตอบ (เลือกข้อถูก)</label>
-              <button onClick={addAnswer} disabled={activeSlide.answers.length >= 6} style={{ padding: '2px 8px', cursor: 'pointer' }}>+</button>
+              <label style={{ fontWeight: 800, color: '#374151' }}>คำตอบ (เลือกข้อถูก)</label>
+              <button 
+                onClick={addAnswer} 
+                disabled={activeSlide.answers.length >= 6} 
+                style={{ 
+                  width: '28px', 
+                  height: '28px', 
+                  borderRadius: '6px', 
+                  border: '1px solid #1368ce', 
+                  backgroundColor: '#eff6ff', 
+                  color: '#1368ce', 
+                  cursor: 'pointer',
+                  fontWeight: 900,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                title="เพิ่มตัวเลือกคำตอบ"
+              >
+                +
+              </button>
             </div>
             
             {activeSlide.answers.map((ans, idx) => (
@@ -309,29 +413,50 @@ export default function CreatorView() {
                   checked={ans.isCorrect} 
                   onChange={() => toggleCorrectAnswer(ans.id)} 
                   title="ข้อนี้ถูกต้อง"
+                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                 />
                 <input 
                   type="text" 
                   value={ans.text}
                   onChange={(e) => updateAnswer(ans.id, e.target.value)}
                   placeholder={`คำตอบ ${idx+1}`}
-                  style={{ flex: 1, padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
+                  style={{ flex: 1, padding: '8px 12px', border: '1.5px solid #d1d5db', borderRadius: '8px', fontSize: '0.95rem' }}
                 />
-                <button onClick={() => removeAnswer(ans.id)} disabled={activeSlide.answers.length <= 2} style={{ padding: '2px 5px', color: 'red' }}>-</button>
+                <button 
+                  onClick={() => removeAnswer(ans.id)} 
+                  disabled={activeSlide.answers.length <= 2} 
+                  style={{ 
+                    width: '28px', 
+                    height: '28px', 
+                    borderRadius: '6px', 
+                    border: '1px solid #fecaca', 
+                    backgroundColor: '#fee2e2', 
+                    color: '#ef4444', 
+                    cursor: activeSlide.answers.length <= 2 ? 'not-allowed' : 'pointer',
+                    opacity: activeSlide.answers.length <= 2 ? 0.4 : 1,
+                    fontWeight: 900,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  title="ลบตัวเลือกนี้"
+                >
+                  -
+                </button>
               </div>
             ))}
           </div>
 
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>ภาพประกอบ</label>
+            <label style={{ display: 'block', fontWeight: 800, color: '#374151', marginBottom: '8px' }}>ภาพประกอบ</label>
             {!activeSlide.image ? (
               <input type="file" accept="image/*" onChange={handleImageUpload} style={{ width: '100%' }} />
             ) : (
               <div>
-                <img src={activeSlide.image} alt="Preview" style={{ width: '100%', maxHeight: '100px', objectFit: 'contain', border: '1px solid #ddd', marginBottom: '5px' }} />
-                <button onClick={removeImage} style={{ width: '100%', padding: '5px', color: 'red' }}>ลบภาพ</button>
+                <img src={activeSlide.image} alt="Preview" style={{ width: '100%', maxHeight: '120px', objectFit: 'contain', borderRadius: '8px', border: '1px solid #e5e7eb', marginBottom: '8px' }} />
+                <button onClick={removeImage} className="btn-kamooy btn-kamooy-danger" style={{ width: '100%', height: '36px' }}>ลบภาพ</button>
                 <div style={{ marginTop: '10px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#4b5563', fontSize: '0.9rem', cursor: 'pointer' }}>
                     <input 
                       type="checkbox" 
                       checked={activeSlide.isFullScreenImage}

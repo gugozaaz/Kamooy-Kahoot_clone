@@ -29,6 +29,9 @@ export const api = {
   hostAction: (pin, hostId, action) =>
     request('/api/host-action', { method: 'POST', body: JSON.stringify({ pin, hostId, action }) }),
 
-  submitAnswer: (pin, playerId, choice) =>
-    request('/api/submit-answer', { method: 'POST', body: JSON.stringify({ pin, playerId, choice }) }),
+  submitAnswer: (pin, playerId, choice, powerup) =>
+    request('/api/submit-answer', { method: 'POST', body: JSON.stringify({ pin, playerId, choice, powerup }) }),
+
+  sendReaction: (pin, emoji, nickname) =>
+    request('/api/send-reaction', { method: 'POST', body: JSON.stringify({ pin, emoji, nickname }) }),
 };

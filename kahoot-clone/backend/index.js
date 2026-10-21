@@ -81,7 +81,10 @@ io.on('connection', (socket) => {
                     if (points < 0) points = 0;
                     if (points > 1000) points = 1000;
                     
-                    const multiplier = currentQ.scoreMultiplier !== undefined ? currentQ.scoreMultiplier : 1;
+                    let multiplier = currentQ.scoreMultiplier !== undefined ? currentQ.scoreMultiplier : 1;
+                    if (answerData.powerup === '2x') {
+                        multiplier *= 2;
+                    }
                     points = points * multiplier;
                     
                     game.players[playerId].score += points;
@@ -227,12 +230,12 @@ io.on('connection', (socket) => {
 
     socket.on('submit-answer', (data) => {
         if (!data || typeof data !== 'object') return;
-        const { pin, selectedIndex } = data;
+        const { pin, selectedIndex, powerup } = data;
         if (typeof selectedIndex !== 'number') return;
         const game = games[pin];
         if (game && game.status === 'QUESTION_ACTIVE' && game.players[socket.id]) {
             // Record answer and timestamp
-            game.answers[socket.id] = { choice: selectedIndex, time: Date.now() };
+            game.answers[socket.id] = { choice: selectedIndex, time: Date.now(), powerup };
             io.to(game.hostId).emit('player-answered', { count: Object.keys(game.answers).length });
             
             // Auto-trigger result if everyone has answered
@@ -240,6 +243,18 @@ io.on('connection', (socket) => {
             if (Object.keys(game.answers).length >= totalPlayers) {
                 triggerShowResult(pin);
             }
+        }
+    });
+
+    socket.on('send-reaction', (data) => {
+        if (!data || typeof data !== 'object') return;
+        const { pin, emoji, nickname } = data;
+        if (pin && emoji) {
+            io.to(pin).emit('reaction', {
+                id: Math.random().toString(36).substring(2, 9),
+                emoji,
+                nickname: nickname || 'Player'
+            });
         }
     });
 

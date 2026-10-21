@@ -9,6 +9,8 @@ import Confetti from './components/Confetti';
 import SoundToggle from './components/SoundToggle';
 import CountdownRing from './components/CountdownRing';
 import FloatingParticles from './components/FloatingParticles';
+import FloatingReactions from './components/FloatingReactions';
+import HostSoundboard from './components/HostSoundboard';
 import Podium from './components/Podium';
 import { getAvatar } from './lib/avatars';
 import { ensureSampleQuiz } from './lib/sampleQuiz';
@@ -234,6 +236,8 @@ export default function HostView() {
     return (
       <div className="host-container game-bg" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '30px', position: 'relative' }}>
         <FloatingParticles />
+        <FloatingReactions reactions={state?.reactions} />
+        <HostSoundboard />
         <SoundToggle />
 
         <div className="lobby-header" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
@@ -314,6 +318,8 @@ export default function HostView() {
     return (
       <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', overflow: 'hidden', backgroundColor: 'var(--theme-yellow)' }}>
         <FloatingParticles />
+        <FloatingReactions reactions={state?.reactions} />
+        <HostSoundboard />
         <SoundToggle />
 
         <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', width: '90%', maxWidth: '1000px' }}>
@@ -348,6 +354,8 @@ export default function HostView() {
     return (
       <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: '20px', overflow: 'hidden' }}>
         <FloatingParticles />
+        <FloatingReactions reactions={state?.reactions} />
+        <HostSoundboard />
         <SoundToggle />
 
         {currentQuestion?.image && currentQuestion?.isFullScreenImage && (
@@ -425,6 +433,8 @@ export default function HostView() {
     return (
       <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: '20px', overflow: 'hidden' }}>
         <FloatingParticles />
+        <FloatingReactions reactions={state?.reactions} />
+        <HostSoundboard />
         <SoundToggle />
 
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', maxWidth: '1200px', margin: '0 auto', width: '100%', flex: 1 }}>
@@ -512,6 +522,8 @@ export default function HostView() {
     return (
       <div className="host-container game-bg" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative' }}>
         <FloatingParticles />
+        <FloatingReactions reactions={state?.reactions} />
+        <HostSoundboard />
         <SoundToggle />
 
         <div className="leaderboard" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '750px', background: 'rgba(255, 255, 255, 0.95)', padding: '36px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.2)' }}>
@@ -539,6 +551,8 @@ export default function HostView() {
     return (
       <div className="host-container game-bg" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '30px 20px', position: 'relative', backgroundColor: 'var(--kahoot-purple)' }}>
         <SoundToggle />
+        <FloatingReactions reactions={state?.reactions} />
+        <HostSoundboard />
         <Confetti count={260} duration={9000} />
         <FloatingParticles />
 

@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { ensureSampleQuiz } from './lib/sampleQuiz';
+import { ensureSampleQuiz, SAMPLE_PRESENTATION } from './lib/sampleQuiz';
 import FloatingParticles from './components/FloatingParticles';
 import { sfx } from './lib/sound';
 
 export default function DashboardView() {
   const [presentations, setPresentations] = useState([]);
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     ensureSampleQuiz();
+    loadPresentations();
+  }, []);
+
+  const loadPresentations = () => {
     const saved = localStorage.getItem('kamooy_presentations');
     if (saved) {
       try {
@@ -19,7 +24,7 @@ export default function DashboardView() {
         console.error("Failed to parse presentations from localStorage", e);
       }
     }
-  }, []);
+  };
 
   const createNew = () => {
     sfx.pop();
@@ -45,9 +50,69 @@ export default function DashboardView() {
     }
   };
 
+  const exportQuiz = (p) => {
+    sfx.pop();
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(p, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `${p.title || 'quiz'}.kamooy.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  const handleImport = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const imported = JSON.parse(event.target.result);
+        if (!imported.slides || !Array.isArray(imported.slides)) {
+          throw new Error('รูปแบบไฟล์ไม่ถูกต้อง (ต้องมี slides array)');
+        }
+        imported.id = uuidv4();
+        imported.title = imported.title ? `${imported.title} (นำเข้า)` : 'ควิซนำเข้า';
+        imported.createdAt = new Date().toISOString();
+        const updated = [...presentations, imported];
+        setPresentations(updated);
+        localStorage.setItem('kamooy_presentations', JSON.stringify(updated));
+        sfx.fanfare();
+        alert(`นำเข้าชุดคำถาม "${imported.title}" สำเร็จ!`);
+      } catch (err) {
+        alert(`เกิดข้อผิดพลาดในการนำเข้า: ${err.message}`);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const loadSampleTrivia = () => {
+    sfx.pop();
+    const newQuiz = {
+      ...SAMPLE_PRESENTATION,
+      id: uuidv4(),
+      title: `ชุดคำถามตัวอย่าง (${new Date().toLocaleTimeString('th-TH')})`,
+      createdAt: new Date().toISOString()
+    };
+    const updated = [...presentations, newQuiz];
+    setPresentations(updated);
+    localStorage.setItem('kamooy_presentations', JSON.stringify(updated));
+    sfx.fanfare();
+  };
+
   return (
     <div style={{ padding: '30px 20px', backgroundColor: '#f3f4f6', minHeight: '100vh', position: 'relative' }}>
       <FloatingParticles count={10} />
+
+      {/* Hidden File Input for Import */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleImport}
+        accept=".json"
+        style={{ display: 'none' }}
+      />
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         {/* Top Header */}
@@ -61,38 +126,26 @@ export default function DashboardView() {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '12px' }}>
+          {/* Action Buttons with Equal Sizing */}
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button
-              onClick={() => navigate('/')}
-              style={{
-                padding: '12px 24px',
-                backgroundColor: '#ffffff',
-                color: '#374151',
-                border: '2px solid #e5e7eb',
-                borderRadius: '12px',
-                cursor: 'pointer',
-                fontWeight: 800,
-                fontSize: '1rem',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-              }}
+              onClick={() => { sfx.pop(); navigate('/'); }}
+              className="btn-kamooy btn-kamooy-secondary"
             >
               🏠 กลับหน้าแรก
             </button>
 
             <button
+              onClick={() => { sfx.pop(); fileInputRef.current?.click(); }}
+              className="btn-kamooy btn-kamooy-secondary"
+              title="นำเข้าชุดคำถามจากไฟล์ JSON"
+            >
+              📥 นำเข้า JSON
+            </button>
+
+            <button
               onClick={createNew}
-              className="btn-primary"
-              style={{
-                padding: '12px 26px',
-                backgroundColor: '#1368ce',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '12px',
-                cursor: 'pointer',
-                fontWeight: 800,
-                fontSize: '1.05rem',
-                boxShadow: '0 4px 12px rgba(19, 104, 206, 0.35)'
-              }}
+              className="btn-kamooy btn-kamooy-blue"
             >
               + สร้างคำถามใหม่
             </button>
@@ -100,10 +153,18 @@ export default function DashboardView() {
         </div>
 
         {presentations.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#6b7280', marginTop: '60px', background: '#fff', padding: '60px 20px', borderRadius: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-            <span style={{ fontSize: '4rem', display: 'block', marginBottom: '16px' }}>📚</span>
-            <h2 style={{ fontSize: '1.8rem', color: '#111827' }}>ยังไม่มีชุดคำถาม</h2>
-            <p>คลิก "+ สร้างคำถามใหม่" เพื่อเริ่มต้นสร้างสื่อการสอนของคุณ</p>
+          <div style={{ textAlign: 'center', color: '#6b7280', marginTop: '60px', background: '#fff', padding: '60px 20px', borderRadius: '24px', boxShadow: '0 8px 24px rgba(0,0,0,0.06)' }}>
+            <span style={{ fontSize: '4.5rem', display: 'block', marginBottom: '16px' }}>📚</span>
+            <h2 style={{ fontSize: '1.8rem', color: '#111827', fontWeight: 900 }}>ยังไม่มีชุดคำถาม</h2>
+            <p style={{ fontSize: '1.1rem', marginBottom: '24px' }}>สร้างชุดคำถามของคุณเอง หรือโหลดตัวอย่างเพื่อเริ่มเล่นได้ทันที</p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button onClick={loadSampleTrivia} className="btn-kamooy btn-kamooy-secondary">
+                ✨ โหลดควิซตัวอย่าง
+              </button>
+              <button onClick={createNew} className="btn-kamooy btn-kamooy-blue">
+                + สร้างคำถามใหม่
+              </button>
+            </div>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
@@ -111,7 +172,7 @@ export default function DashboardView() {
               <div key={p.id} style={{
                 backgroundColor: '#ffffff',
                 padding: '24px',
-                borderRadius: '18px',
+                borderRadius: '20px',
                 boxShadow: '0 8px 24px rgba(0,0,0,0.07)',
                 border: '1px solid #e5e7eb',
                 display: 'flex',
@@ -119,68 +180,63 @@ export default function DashboardView() {
                 transition: 'transform 0.15s ease, box-shadow 0.15s ease'
               }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px', marginBottom: '12px' }}>
-                  <h3 style={{ margin: 0, color: '#111827', fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.3 }}>
+                  <h3 style={{ margin: 0, color: '#111827', fontSize: '1.35rem', fontWeight: 900, lineHeight: 1.3 }}>
                     {p.title || 'ไม่มีชื่อชุดคำถาม'}
                   </h3>
-                  <span style={{ background: '#f3f4f6', color: '#4b5563', padding: '4px 10px', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                  <span style={{ background: '#f3f4f6', color: '#4b5563', padding: '4px 12px', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 800, whiteSpace: 'nowrap' }}>
                     {p.slides ? p.slides.length : 0} ข้อ
                   </span>
                 </div>
 
-                <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '24px' }}>
-                  สร้างเมื่อ: {p.createdAt ? new Date(p.createdAt).toLocaleDateString('th-TH') : 'ไม่ระบุ'}
-                </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                  <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: 0 }}>
+                    สร้างเมื่อ: {p.createdAt ? new Date(p.createdAt).toLocaleDateString('th-TH') : 'ไม่ระบุ'}
+                  </p>
+                  <button
+                    onClick={() => exportQuiz(p)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#4b5563',
+                      fontSize: '0.85rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      textDecoration: 'underline'
+                    }}
+                    title="ดาวน์โหลดชุดคำถามเป็นไฟล์ JSON"
+                  >
+                    📤 ส่งออก JSON
+                  </button>
+                </div>
 
-                <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
+                {/* Symmetrically Sized Card Action Buttons */}
+                <div style={{ display: 'flex', gap: '10px', marginTop: 'auto', alignItems: 'center' }}>
                   <button
                     onClick={() => {
                       sfx.unlock();
                       window.open(`/host/${p.id}`, '_blank');
                     }}
-                    className="btn-primary"
-                    style={{
-                      flex: 1.4,
-                      padding: '12px',
-                      backgroundColor: '#26890c',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                      fontWeight: 800,
-                      fontSize: '1rem',
-                      boxShadow: '0 4px 10px rgba(38,137,12,0.3)'
-                    }}
+                    className="btn-kamooy btn-kamooy-primary"
+                    style={{ flex: 1.2 }}
                   >
                     🚀 เล่น (Host)
                   </button>
                   <button
-                    onClick={() => navigate(`/creator/${p.id}`)}
-                    style={{
-                      flex: 1,
-                      padding: '12px',
-                      backgroundColor: '#f3f4f6',
-                      color: '#1f2937',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                      fontWeight: 700
+                    onClick={() => {
+                      sfx.pop();
+                      navigate(`/creator/${p.id}`);
                     }}
+                    className="btn-kamooy btn-kamooy-secondary"
+                    style={{ flex: 1 }}
                   >
-                    แก้ไข
+                    ✏️ แก้ไข
                   </button>
                   <button
                     onClick={() => deletePresentation(p.id)}
-                    style={{
-                      padding: '12px 16px',
-                      backgroundColor: '#fee2e2',
-                      color: '#ef4444',
-                      border: 'none',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                      fontWeight: 700
-                    }}
+                    className="btn-kamooy btn-kamooy-danger"
+                    style={{ flex: 0.8 }}
                   >
-                    ลบ
+                    🗑️ ลบ
                   </button>
                 </div>
               </div>

@@ -18,10 +18,11 @@ export function newGame(pin, hostId, questions, now) {
         pin,
         hostId,
         status: 'LOBBY',
-        players: {},            // playerId -> { id, nickname, score }
+        players: {},            // playerId -> { id, nickname, score, avatar }
         questions: questions || [],
         currentQuestionIndex: 0,
-        answers: {},            // playerId -> { choice, time }
+        answers: {},            // playerId -> { choice, time, powerup }
+        reactions: [],          // [{ id, emoji, nickname, at }]
         phaseStartedAt: now,
         questionStartedAt: 0
     };
@@ -31,10 +32,26 @@ export function currentQuestion(game) {
     return game.questions[game.currentQuestionIndex];
 }
 
+export function addReaction(game, emoji, nickname, now) {
+    if (!game.reactions) game.reactions = [];
+    game.reactions.push({
+        id: Math.random().toString(36).substring(2, 9),
+        emoji,
+        nickname: nickname || 'Player',
+        at: now
+    });
+    // Keep reactions from the last 6 seconds, up to 25 items
+    game.reactions = game.reactions.filter(r => now - r.at < 6000).slice(-25);
+}
+
 // Lazy phase transitions driven by elapsed time.
 export function advance(game, now) {
     const q = currentQuestion(game);
     if (!q) return;
+
+    if (game.reactions && game.reactions.length > 0) {
+        game.reactions = game.reactions.filter(r => now - r.at < 6000);
+    }
 
     if (game.status === 'QUESTION_PREVIEW' && now - game.phaseStartedAt >= PREVIEW_MS) {
         game.status = 'QUESTION_ACTIVE';
@@ -84,7 +101,7 @@ export function showResult(game, now) {
     });
 
     for (const [playerId, answerData] of Object.entries(game.answers)) {
-        const { choice, time } = answerData;
+        const { choice, time, powerup } = answerData;
         const isCorrect = q.correctAnswers.includes(choice);
         if (isCorrect) {
             // Calculate time taken in ms
@@ -96,7 +113,10 @@ export function showResult(game, now) {
             if (points < 0) points = 0;
             if (points > 1000) points = 1000;
 
-            const multiplier = q.scoreMultiplier !== undefined ? q.scoreMultiplier : 1;
+            let multiplier = q.scoreMultiplier !== undefined ? q.scoreMultiplier : 1;
+            if (powerup === '2x') {
+                multiplier *= 2;
+            }
             points = points * multiplier;
 
             game.players[playerId].score += points;
@@ -132,7 +152,7 @@ export function assertHost(game, hostId) {
     }
 }
 
-export function joinPlayer(game, playerId, nickname, now) {
+export function joinPlayer(game, playerId, nickname, now, avatar = null) {
     if (game.status !== 'LOBBY') {
         throw new ApiError(400, 'Game already started');
     }
@@ -140,7 +160,7 @@ export function joinPlayer(game, playerId, nickname, now) {
     if (nameExists) {
         throw new ApiError(400, 'Nickname taken');
     }
-    game.players[playerId] = { id: playerId, nickname, score: 0 };
+    game.players[playerId] = { id: playerId, nickname, score: 0, avatar: avatar || null };
 }
 
 export function hostAction(game, action, now) {
@@ -189,15 +209,23 @@ function beginPreview(game, now) {
     delete game.lastResult;
 }
 
-export function submitAnswer(game, playerId, choice, now) {
+export function submitAnswer(game, playerId, choice, powerupOrNow, maybeNow) {
     if (game.status !== 'QUESTION_ACTIVE') {
         throw new ApiError(400, 'Question is not active');
     }
     if (!game.players[playerId]) {
         throw new ApiError(403, 'Not a player in this game');
     }
+    let powerup = null;
+    let now = Date.now();
+    if (typeof powerupOrNow === 'number') {
+        now = powerupOrNow;
+    } else {
+        powerup = powerupOrNow;
+        now = typeof maybeNow === 'number' ? maybeNow : Date.now();
+    }
     // Record answer and timestamp
-    game.answers[playerId] = { choice, time: now };
+    game.answers[playerId] = { choice, time: now, powerup };
 
     // Auto-trigger result if everyone has answered
     const totalPlayers = Object.keys(game.players).length;
@@ -231,6 +259,7 @@ export function hostProjection(row, now) {
         currentIndex: game.currentQuestionIndex,
         playersCount: Object.keys(game.players).length,
         players: Object.values(game.players),
+        reactions: (game.reactions || []).filter(r => now - r.at < 6000),
         question: ['QUESTION_PREVIEW', 'QUESTION_ACTIVE', 'QUESTION_RESULT', 'QUESTION_LEADERBOARD'].includes(game.status)
             ? questionForHost(game)
             : null,
@@ -265,6 +294,7 @@ export function playerProjection(row, playerId, now) {
         status: game.status,
         currentIndex: game.currentQuestionIndex,
         myScore: me.score,
+        reactions: (game.reactions || []).filter(r => now - r.at < 6000),
         question: game.status === 'QUESTION_PREVIEW'
             ? { text: q.text, timeLimit: q.timeLimit }
             : game.status === 'QUESTION_ACTIVE'
