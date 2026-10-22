@@ -34,6 +34,12 @@ export default function CreatorView() {
           const initSlide = DEFAULT_SLIDE();
           found.slides = [initSlide];
         }
+        if (!found.settings) {
+          found.settings = {
+            enablePowerups: false,
+            showAnswerText: true
+          };
+        }
         setPresentation(found);
         setActiveSlideId(found.slides[0].id);
       } else {
@@ -50,6 +56,18 @@ export default function CreatorView() {
 
   const updatePresentation = (updatedSlides, newTitle = presentation.title) => {
     const updated = { ...presentation, title: newTitle, slides: updatedSlides };
+    setPresentation(updated);
+  };
+
+  const updateSettings = (key, value) => {
+    const currentSettings = presentation.settings || { enablePowerups: false, showAnswerText: true };
+    const updated = {
+      ...presentation,
+      settings: {
+        ...currentSettings,
+        [key]: value
+      }
+    };
     setPresentation(updated);
   };
 
@@ -162,14 +180,97 @@ export default function CreatorView() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f4f4f4' }}>
       
       {/* HEADER */}
-      <div style={{ height: '68px', backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+      <div style={{ height: '68px', backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', gap: '16px' }}>
         <input 
           type="text" 
           value={presentation.title} 
           onChange={(e) => updatePresentation(presentation.slides, e.target.value)}
           placeholder="ตั้งชื่อชุดคำถาม..."
-          style={{ fontSize: '1.25rem', fontWeight: 800, padding: '8px 14px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '340px' }}
+          style={{ fontSize: '1.2rem', fontWeight: 800, padding: '8px 14px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '280px' }}
         />
+
+        {/* GAMEPLAY OPTIONS TOGGLE PANEL (HIGHLIGHTED IN RED IN USER UI) */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          background: '#f8fafc',
+          padding: '6px 14px',
+          borderRadius: '16px',
+          border: '1.5px solid #e2e8f0',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.03)'
+        }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            ⚙️ ตัวเลือกเกม:
+          </span>
+
+          {/* Option 1: Power-ups (Default: False) */}
+          <button
+            type="button"
+            onClick={() => updateSettings('enablePowerups', !(presentation.settings?.enablePowerups ?? false))}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 12px',
+              borderRadius: '10px',
+              border: (presentation.settings?.enablePowerups ?? false) ? '1.5px solid #16a34a' : '1.5px solid #cbd5e1',
+              background: (presentation.settings?.enablePowerups ?? false) ? '#f0fdf4' : '#ffffff',
+              color: (presentation.settings?.enablePowerups ?? false) ? '#15803d' : '#64748b',
+              fontWeight: 800,
+              fontSize: '0.86rem',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+            title="เปิด/ปิดปุ่มตัวช่วยเล่นเกม (⚡ 50:50, 🌟 x2, 🛡️ ป้องกัน) บนหน้าจอผู้เรียน (ค่าเริ่มต้น: ปิด)"
+          >
+            <span>⚡ ตัวช่วย (50:50 / x2 / เกราะ)</span>
+            <span style={{
+              fontSize: '0.75rem',
+              padding: '2px 8px',
+              borderRadius: '999px',
+              background: (presentation.settings?.enablePowerups ?? false) ? '#22c55e' : '#e2e8f0',
+              color: (presentation.settings?.enablePowerups ?? false) ? '#ffffff' : '#64748b',
+              fontWeight: 900
+            }}>
+              {(presentation.settings?.enablePowerups ?? false) ? 'เปิด' : 'ปิด'}
+            </span>
+          </button>
+
+          {/* Option 2: Show Answer Text / Captions on Choice Buttons (Default: True) */}
+          <button
+            type="button"
+            onClick={() => updateSettings('showAnswerText', !(presentation.settings?.showAnswerText ?? true))}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 12px',
+              borderRadius: '10px',
+              border: (presentation.settings?.showAnswerText ?? true) ? '1.5px solid #2563eb' : '1.5px solid #cbd5e1',
+              background: (presentation.settings?.showAnswerText ?? true) ? '#eff6ff' : '#ffffff',
+              color: (presentation.settings?.showAnswerText ?? true) ? '#1d4ed8' : '#64748b',
+              fontWeight: 800,
+              fontSize: '0.86rem',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+            title="แสดงข้อความคำตอบภายในปุ่ม choice แทนที่จะแสดงแค่สัญลักษณ์ (ค่าเริ่มต้น: เปิด)"
+          >
+            <span>📝 แสดงคำตอบบนปุ่ม</span>
+            <span style={{
+              fontSize: '0.75rem',
+              padding: '2px 8px',
+              borderRadius: '999px',
+              background: (presentation.settings?.showAnswerText ?? true) ? '#3b82f6' : '#e2e8f0',
+              color: (presentation.settings?.showAnswerText ?? true) ? '#ffffff' : '#64748b',
+              fontWeight: 900
+            }}>
+              {(presentation.settings?.showAnswerText ?? true) ? 'เปิด' : 'ปิด'}
+            </span>
+          </button>
+        </div>
+
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <button 
             onClick={() => navigate('/dashboard')} 

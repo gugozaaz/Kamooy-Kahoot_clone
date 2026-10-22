@@ -17,8 +17,8 @@ async function request(path, options) {
 }
 
 export const api = {
-  createGame: (questions) =>
-    request('/api/create-game', { method: 'POST', body: JSON.stringify({ questions }) }),
+  createGame: (questions, settings) =>
+    request('/api/create-game', { method: 'POST', body: JSON.stringify({ questions, settings }) }),
 
   joinGame: (pin, nickname) =>
     request('/api/join-game', { method: 'POST', body: JSON.stringify({ pin, nickname }) }),

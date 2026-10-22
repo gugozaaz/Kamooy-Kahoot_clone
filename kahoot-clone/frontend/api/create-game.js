@@ -4,7 +4,7 @@ import { readJsonBody, sendJson, withErrorHandling, ApiError } from './_lib/http
 
 export default withErrorHandling(async (req, res) => {
   if (req.method !== 'POST') throw new ApiError(405, 'Method not allowed');
-  const { questions } = await readJsonBody(req);
+  const { questions, settings } = await readJsonBody(req);
   if (!Array.isArray(questions) || questions.length === 0) {
     throw new ApiError(400, 'questions array is required');
   }
@@ -15,7 +15,7 @@ export default withErrorHandling(async (req, res) => {
 
   // Retry until we find a free pin
   for (let attempt = 0; attempt < 10; attempt++) {
-    const game = newGame(generatePIN(), hostId, questions, now);
+    const game = newGame(generatePIN(), hostId, questions, now, settings);
     const created = await store.createGame(game);
     if (created) {
       return sendJson(res, 200, { success: true, pin: game.pin, hostId });

@@ -5,6 +5,10 @@ export const SAMPLE_PRESENTATION = {
   id: SAMPLE_PRESENTATION_ID,
   title: '🎮 Kamooy Gamified Challenge: ประลองปัญญาและความเร็ว',
   createdAt: new Date().toISOString(),
+  settings: {
+    enablePowerups: false,
+    showAnswerText: true
+  },
   slides: [
     {
       id: 'slide-1',

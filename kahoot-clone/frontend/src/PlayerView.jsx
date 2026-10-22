@@ -494,6 +494,8 @@ export default function PlayerView() {
   if (gameState === 'QUESTION_ACTIVE' && !submitted) {
     const choicesCount = currentQuestion?.choicesCount || 4;
     const gridLayoutClass = choicesCount === 2 ? 'balanced-pad-grid-2' : choicesCount === 3 ? 'balanced-pad-grid-3' : 'balanced-pad-grid-4';
+    const enablePowerups = state?.settings?.enablePowerups ?? false;
+    const showAnswerText = state?.settings?.showAnswerText ?? true;
 
     return (
       <div className="player-container game-bg" style={{
@@ -527,44 +529,48 @@ export default function PlayerView() {
           )}
         </div>
 
-        {/* Tactical Power-Ups Bar (Compact on smartphone) */}
-        <div className="powerup-bar" style={{ position: 'relative', zIndex: 1 }}>
-          <button
-            type="button"
-            onClick={activateFiftyFifty}
-            disabled={powerupsUsed.fiftyFifty || choicesCount <= 2}
-            className={`powerup-btn${eliminatedChoices.length > 0 ? ' active-glow' : ''}`}
-            title="ตัด 2 คำตอบที่ผิดออก (ใช้ได้ 1 ครั้ง)"
-          >
-            ⚡ 50:50 {powerupsUsed.fiftyFifty ? '✓' : ''}
-          </button>
+        {/* Tactical Power-Ups Bar (Only displayed if enabled in quiz settings, default: OFF) */}
+        {enablePowerups && (
+          <div className="powerup-bar" style={{ position: 'relative', zIndex: 1 }}>
+            <button
+              type="button"
+              onClick={activateFiftyFifty}
+              disabled={powerupsUsed.fiftyFifty || choicesCount <= 2}
+              className={`powerup-btn${eliminatedChoices.length > 0 ? ' active-glow' : ''}`}
+              title="ตัด 2 คำตอบที่ผิดออก (ใช้ได้ 1 ครั้ง)"
+            >
+              ⚡ 50:50 {powerupsUsed.fiftyFifty ? '✓' : ''}
+            </button>
 
-          <button
-            type="button"
-            onClick={activateDoublePoints}
-            disabled={powerupsUsed.doublePoints}
-            className={`powerup-btn${activePowerup === '2x' ? ' active-glow' : ''}`}
-            title="คะแนนสองเท่าในข้อนี้ (ใช้ได้ 1 ครั้ง)"
-          >
-            🌟 x2 {powerupsUsed.doublePoints ? '✓' : ''}
-          </button>
+            <button
+              type="button"
+              onClick={activateDoublePoints}
+              disabled={powerupsUsed.doublePoints}
+              className={`powerup-btn${activePowerup === '2x' ? ' active-glow' : ''}`}
+              title="คะแนนสองเท่าในข้อนี้ (ใช้ได้ 1 ครั้ง)"
+            >
+              🌟 x2 {powerupsUsed.doublePoints ? '✓' : ''}
+            </button>
 
-          <button
-            type="button"
-            onClick={activateStreakShield}
-            disabled={powerupsUsed.streakShield}
-            className={`powerup-btn${activePowerup === 'shield' ? ' active-glow' : ''}`}
-            title="เกราะป้องกันคอมโบไม่ให้หลุดหากตอบผิด (ใช้ได้ 1 ครั้ง)"
-          >
-            🛡️ ป้องกัน {powerupsUsed.streakShield ? '✓' : ''}
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={activateStreakShield}
+              disabled={powerupsUsed.streakShield}
+              className={`powerup-btn${activePowerup === 'shield' ? ' active-glow' : ''}`}
+              title="เกราะป้องกันคอมโบไม่ให้หลุดหากตอบผิด (ใช้ได้ 1 ครั้ง)"
+            >
+              🛡️ ป้องกัน {powerupsUsed.streakShield ? '✓' : ''}
+            </button>
+          </div>
+        )}
 
         {/* Symmetrically Balanced Pad Grid - Fills 100% available space */}
         <div style={{ flex: 1, minHeight: 0, position: 'relative', zIndex: 1, margin: '6px 0', display: 'flex', flexDirection: 'column' }}>
           <div className={gridLayoutClass}>
             {Array.from({ length: choicesCount }).map((_, i) => {
               const isEliminated = eliminatedChoices.includes(i);
+              const choiceText = currentQuestion?.choices?.[i];
+
               return (
                 <button
                   key={i}
@@ -572,10 +578,40 @@ export default function PlayerView() {
                   className={`pad-btn pad-btn-arcade c-${i % 6}${tappedIndex === i ? ' tapped' : ''}${isEliminated ? ' pad-btn-eliminated' : ''}`}
                   aria-label={`Answer ${i + 1}`}
                   onClick={() => selectChoice(i)}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: showAnswerText && choiceText ? '10px 12px' : '0'
+                  }}
                 >
-                  <span className="pad-symbol" style={{ fontSize: choicesCount <= 2 ? 'clamp(4.5rem, 15vw, 6rem)' : 'clamp(3.8rem, 12vw, 5rem)' }}>
-                    {isEliminated ? '✕' : CHOICE_SYMBOLS[i % CHOICE_SYMBOLS.length]}
-                  </span>
+                  {showAnswerText && choiceText ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', boxSizing: 'border-box' }}>
+                      <span className="pad-symbol" style={{ fontSize: choicesCount <= 2 ? '2.4rem' : '1.8rem', opacity: 0.85, marginBottom: '6px' }}>
+                        {isEliminated ? '✕' : CHOICE_SYMBOLS[i % CHOICE_SYMBOLS.length]}
+                      </span>
+                      <span style={{
+                        fontSize: choicesCount <= 2 ? 'clamp(1.4rem, 5.5vw, 2.2rem)' : 'clamp(1.15rem, 4.2vw, 1.65rem)',
+                        fontWeight: 800,
+                        lineHeight: 1.25,
+                        textAlign: 'center',
+                        wordBreak: 'break-word',
+                        overflow: 'hidden',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        color: '#ffffff',
+                        textShadow: '0 2px 4px rgba(0,0,0,0.35)'
+                      }}>
+                        {isEliminated ? 'ตัดออกแล้ว' : choiceText}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="pad-symbol" style={{ fontSize: choicesCount <= 2 ? 'clamp(4.5rem, 15vw, 6rem)' : 'clamp(3.8rem, 12vw, 5rem)' }}>
+                      {isEliminated ? '✕' : CHOICE_SYMBOLS[i % CHOICE_SYMBOLS.length]}
+                    </span>
+                  )}
                 </button>
               );
             })}

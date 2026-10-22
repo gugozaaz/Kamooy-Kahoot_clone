@@ -13,13 +13,17 @@ export function generatePIN() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-export function newGame(pin, hostId, questions, now) {
+export function newGame(pin, hostId, questions, now, settings = {}) {
     return {
         pin,
         hostId,
         status: 'LOBBY',
         players: {},            // playerId -> { id, nickname, score, avatar }
         questions: questions || [],
+        settings: {
+            enablePowerups: settings?.enablePowerups ?? false,
+            showAnswerText: settings?.showAnswerText ?? true,
+        },
         currentQuestionIndex: 0,
         answers: {},            // playerId -> { choice, time, powerup }
         reactions: [],          // [{ id, emoji, nickname, at }]
@@ -256,6 +260,7 @@ export function hostProjection(row, now) {
         serverNow: now,
         pin: game.pin,
         status: game.status,
+        settings: game.settings || { enablePowerups: false, showAnswerText: true },
         currentIndex: game.currentQuestionIndex,
         playersCount: Object.keys(game.players).length,
         players: Object.values(game.players),
@@ -287,18 +292,25 @@ export function playerProjection(row, playerId, now) {
     const me = game.players[playerId];
     if (!me) throw new ApiError(403, 'Not a player in this game');
     const q = currentQuestion(game);
+    const showAnswerText = game.settings?.showAnswerText ?? true;
     const base = {
         version,
         serverNow: now,
         pin: game.pin,
         status: game.status,
+        settings: game.settings || { enablePowerups: false, showAnswerText: true },
         currentIndex: game.currentQuestionIndex,
         myScore: me.score,
         reactions: (game.reactions || []).filter(r => now - r.at < 6000),
         question: game.status === 'QUESTION_PREVIEW'
             ? { text: q.text, timeLimit: q.timeLimit }
             : game.status === 'QUESTION_ACTIVE'
-                ? { text: q.text, choicesCount: q.choices ? q.choices.length : 4, timeLimit: q.timeLimit }
+                ? {
+                    text: q.text,
+                    choicesCount: q.choices ? q.choices.length : 4,
+                    choices: showAnswerText ? q.choices : null,
+                    timeLimit: q.timeLimit
+                  }
                 : null,
         previewTimeLeftMs: game.status === 'QUESTION_PREVIEW'
             ? Math.max(0, PREVIEW_MS - (now - game.phaseStartedAt))

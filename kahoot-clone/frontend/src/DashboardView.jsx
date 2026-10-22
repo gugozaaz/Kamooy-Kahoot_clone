@@ -34,6 +34,10 @@ export default function DashboardView() {
       id: newId,
       title: 'สื่อการสอนชุดใหม่',
       createdAt: new Date().toISOString(),
+      settings: {
+        enablePowerups: false,
+        showAnswerText: true
+      },
       slides: []
     };
     const updated = [...presentations, newPresentation];

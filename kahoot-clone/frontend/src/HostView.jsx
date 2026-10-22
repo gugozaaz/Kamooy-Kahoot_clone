@@ -201,7 +201,12 @@ export default function HostView() {
       };
     });
 
-    api.createGame(questions)
+    const settings = {
+      enablePowerups: presentation?.settings?.enablePowerups ?? false,
+      showAnswerText: presentation?.settings?.showAnswerText ?? true,
+    };
+
+    api.createGame(questions, settings)
       .then(res => {
         setPin(res.pin);
         setHostId(res.hostId);
