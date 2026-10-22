@@ -28,7 +28,7 @@ export default function HostSoundboard() {
   };
 
   return (
-    <div className="soundboard-panel">
+    <div className="soundboard-panel" style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 9000 }}>
       {open && (
         <div className="soundboard-popup">
           <button
@@ -78,7 +78,7 @@ export default function HostSoundboard() {
         className="soundboard-trigger-btn"
         title={open ? "ปิดซาวด์บอร์ด" : "เปิด DJ Soundboard สำหรับอาจารย์"}
       >
-        {open ? '✖️' : '🔊'}
+        {open ? '✖️' : '🎛️'}
       </button>
     </div>
   );

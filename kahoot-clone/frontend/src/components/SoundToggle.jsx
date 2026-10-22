@@ -23,6 +23,8 @@ export default function SoundToggle() {
         top: '16px',
         left: '16px',
         right: 'auto',
+        bottom: 'auto',
+        margin: 0,
         zIndex: 9999
       }}
     >

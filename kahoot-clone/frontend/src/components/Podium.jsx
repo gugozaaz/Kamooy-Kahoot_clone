@@ -25,53 +25,41 @@ export default function Podium({ players = [] }) {
   return (
     <div className="podium-wrapper">
       <div className="podium-stage">
-        {/* 2nd Place (Silver - Left) */}
+        {/* 2nd Place (Silver - Left) - Always rendered */}
         <div className="podium-col col-2nd">
-          {p2 ? (
-            <PodiumPlayer
-              player={p2}
-              rank={2}
-              medal="🥈"
-              delay="1.2s"
-              pillarHeight="clamp(95px, 13vh, 130px)"
-              pillarClass="pillar-silver"
-            />
-          ) : (
-            <div className="podium-empty" style={{ height: 'clamp(95px, 13vh, 130px)' }} />
-          )}
+          <PodiumPlayer
+            player={p2 || { isPlaceholder: true }}
+            rank={2}
+            medal="🥈"
+            delay="1.2s"
+            pillarHeight="clamp(95px, 13vh, 130px)"
+            pillarClass="pillar-silver"
+          />
         </div>
 
-        {/* 1st Place (Gold - Center) */}
+        {/* 1st Place (Gold - Center) - Always rendered */}
         <div className="podium-col col-1st">
-          {p1 ? (
-            <PodiumPlayer
-              player={p1}
-              rank={1}
-              medal="🥇"
-              delay="2.6s"
-              pillarHeight="clamp(130px, 18vh, 180px)"
-              pillarClass="pillar-gold"
-              isWinner
-            />
-          ) : (
-            <div className="podium-empty" style={{ height: 'clamp(130px, 18vh, 180px)' }} />
-          )}
+          <PodiumPlayer
+            player={p1 || { isPlaceholder: true }}
+            rank={1}
+            medal="🥇"
+            delay="2.6s"
+            pillarHeight="clamp(130px, 18vh, 180px)"
+            pillarClass="pillar-gold"
+            isWinner={!!p1}
+          />
         </div>
 
-        {/* 3rd Place (Bronze - Right) */}
+        {/* 3rd Place (Bronze - Right) - Always rendered */}
         <div className="podium-col col-3rd">
-          {p3 ? (
-            <PodiumPlayer
-              player={p3}
-              rank={3}
-              medal="🥉"
-              delay="0.3s"
-              pillarHeight="clamp(65px, 9vh, 90px)"
-              pillarClass="pillar-bronze"
-            />
-          ) : (
-            <div className="podium-empty" style={{ height: 'clamp(65px, 9vh, 90px)' }} />
-          )}
+          <PodiumPlayer
+            player={p3 || { isPlaceholder: true }}
+            rank={3}
+            medal="🥉"
+            delay="0.3s"
+            pillarHeight="clamp(65px, 9vh, 90px)"
+            pillarClass="pillar-bronze"
+          />
         </div>
       </div>
 
@@ -99,18 +87,25 @@ export default function Podium({ players = [] }) {
 }
 
 function PodiumPlayer({ player, rank, medal, delay, pillarHeight, pillarClass, isWinner }) {
-  const avatar = getAvatar(player.nickname);
-  const score = useCountUp(player.score, 1200);
+  const isPlaceholder = !player || player.isPlaceholder;
+  const avatar = isPlaceholder
+    ? { bg: 'rgba(255, 255, 255, 0.2)', emoji: medal }
+    : getAvatar(player.nickname);
+  const score = isPlaceholder ? '-' : useCountUp(player.score, 1200);
 
   return (
-    <div className={`podium-card ${isWinner ? 'winner-card' : ''}`} style={{ animationDelay: delay }}>
+    <div className={`podium-card ${isWinner && !isPlaceholder ? 'winner-card' : ''}`} style={{ animationDelay: delay }}>
       <div className="podium-avatar-box">
-        {isWinner && <div className="winner-crown">👑</div>}
-        <div className="podium-avatar-circle" style={{ background: avatar.bg }}>
+        {isWinner && !isPlaceholder && <div className="winner-crown">👑</div>}
+        <div className="podium-avatar-circle" style={{ background: avatar.bg, opacity: isPlaceholder ? 0.65 : 1 }}>
           <span className="avatar-emoji">{avatar.emoji}</span>
         </div>
-        <div className="podium-player-name">{player.nickname}</div>
-        <div className="podium-player-score">{score} pts</div>
+        <div className="podium-player-name" style={{ opacity: isPlaceholder ? 0.65 : 1 }}>
+          {isPlaceholder ? '(ว่าง)' : player.nickname}
+        </div>
+        <div className="podium-player-score" style={{ opacity: isPlaceholder ? 0.5 : 1 }}>
+          {isPlaceholder ? '-' : `${score} pts`}
+        </div>
       </div>
 
       <div

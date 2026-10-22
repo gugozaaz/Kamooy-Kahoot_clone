@@ -316,13 +316,13 @@ export default function HostView() {
   if (gameState === 'QUESTION_PREVIEW') {
     const is321 = previewTimeLeft <= 3 && previewTimeLeft > 0;
     return (
-      <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', overflow: 'hidden', backgroundColor: 'var(--theme-yellow)' }}>
+      <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', maxHeight: '100vh', padding: '20px', overflow: 'hidden', backgroundColor: 'var(--theme-yellow)' }}>
+        <SoundToggle />
+        <HostSoundboard />
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
-        <HostSoundboard />
-        <SoundToggle />
 
-        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', width: '90%', maxWidth: '1000px' }}>
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', width: '90%', maxWidth: '1000px', margin: 'auto 0' }}>
           <div style={{ display: 'inline-block', background: 'rgba(0,0,0,0.18)', color: '#333', padding: '8px 24px', borderRadius: '999px', fontSize: '1.2rem', fontWeight: 800, marginBottom: '20px' }}>
             ⚡ คำถามข้อที่ {(state?.currentIndex || 0) + 1}
           </div>
@@ -554,26 +554,41 @@ export default function HostView() {
 
   if (gameState === 'GAME_OVER') {
     return (
-      <div className="host-container game-bg" style={{ height: '100vh', maxHeight: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px 20px', position: 'relative', backgroundColor: 'var(--kahoot-purple)' }}>
+      <div
+        className="host-container game-bg"
+        style={{
+          height: '100vh',
+          maxHeight: '100vh',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px 20px',
+          position: 'relative',
+          background: 'radial-gradient(ellipse at center, #5c1bb8 0%, #360c7a 70%, #20054d 100%)',
+          color: '#ffffff'
+        }}
+      >
         <SoundToggle />
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
         <Confetti count={260} duration={9000} />
         <FloatingParticles />
 
-        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '960px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.6rem)', fontWeight: 900, color: '#ffffff', textShadow: '0 4px 12px rgba(0,0,0,0.3)', margin: '0 0 12px 0' }}>
+        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '960px', textAlign: 'center', margin: 'auto 0' }}>
+          <h1 style={{ fontSize: 'clamp(2rem, 3.2vw, 2.8rem)', fontWeight: 900, color: '#ffffff', textShadow: '0 4px 16px rgba(0,0,0,0.5)', margin: '0 0 16px 0' }}>
             🎉 สรุปผลการแข่งขันรอบชิงชนะเลิศ!
           </h1>
 
           {/* 3-Tier Olympic Podium */}
           <Podium players={leaderboard || []} />
 
-          <div style={{ marginTop: '16px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
+          <div style={{ marginTop: '20px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
             <button
               className="btn-kamooy btn-kamooy-primary btn-glow"
               onClick={() => navigate('/dashboard')}
-              style={{ fontSize: '1.2rem', padding: '0 32px', height: '48px', borderRadius: '999px' }}
+              style={{ fontSize: '1.2rem', padding: '0 36px', height: '48px', borderRadius: '999px', background: '#ffffff', color: '#111827', border: 'none', boxShadow: '0 6px 20px rgba(0,0,0,0.3)' }}
             >
               กลับหน้าจัดการ (Dashboard)
             </button>
