@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { Plus, Trash2, Copy, ArrowUp, ArrowDown } from 'lucide-react';
+import { getStoredAuth } from './lib/auth';
+import { api } from './lib/api';
 
 const DEFAULT_SLIDE = () => ({
   id: uuidv4(),
@@ -25,14 +27,37 @@ export default function CreatorView() {
   const [activeSlideId, setActiveSlideId] = useState(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem('kamooy_presentations');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const found = parsed.find(p => p.id === id);
+    const auth = getStoredAuth();
+    if (!auth?.user) {
+      alert('กรุณาเข้าสู่ระบบผู้สอนด้วย Google ก่อนแก้ไขสื่อการสอน');
+      navigate('/dashboard');
+      return;
+    }
+
+    const loadData = async () => {
+      let found = null;
+      try {
+        const res = await api.getPresentation(id);
+        if (res.success && res.presentation) {
+          found = res.presentation;
+        }
+      } catch {
+        // Fallback to local storage if API call fails
+      }
+
+      if (!found) {
+        const saved = localStorage.getItem('kamooy_presentations');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            found = parsed.find(p => p.id === id);
+          } catch {}
+        }
+      }
+
       if (found) {
         if (!found.slides || found.slides.length === 0) {
-          const initSlide = DEFAULT_SLIDE();
-          found.slides = [initSlide];
+          found.slides = [DEFAULT_SLIDE()];
         }
         if (!found.settings) {
           found.settings = {
@@ -43,10 +68,12 @@ export default function CreatorView() {
         setPresentation(found);
         setActiveSlideId(found.slides[0].id);
       } else {
-        alert("Presentation not found");
+        alert("ไม่พบชุดคำถามนี้");
         navigate('/dashboard');
       }
-    }
+    };
+
+    loadData();
   }, [id, navigate]);
 
   if (!presentation) return <div>Loading...</div>;
@@ -71,7 +98,12 @@ export default function CreatorView() {
     setPresentation(updated);
   };
 
-  const saveToStorage = () => {
+  const saveToStorage = async () => {
+    try {
+      await api.savePresentation(presentation);
+    } catch (err) {
+      console.warn('API save warning:', err);
+    }
     const saved = localStorage.getItem('kamooy_presentations');
     let parsed = saved ? JSON.parse(saved) : [];
     const index = parsed.findIndex(p => p.id === id);

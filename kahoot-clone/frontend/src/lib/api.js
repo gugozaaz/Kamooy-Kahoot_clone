@@ -1,12 +1,21 @@
 // HTTP client replacing the old Socket.IO transport.
 // All calls are same-origin: Vercel serves /api/* functions in production,
 // and the Vite dev server proxies /api/* to the local dev server.
+import { getAuthToken } from './auth.js';
 
-async function request(path, options) {
+async function request(path, options = {}) {
+  const token = options.token || getAuthToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    ...(options.headers || {}),
+  };
+
   const res = await fetch(path, {
-    headers: { 'Content-Type': 'application/json' },
     ...options,
+    headers,
   });
+
   const data = await res.json().catch(() => ({}));
   if (!res.ok || data.success === false) {
     const err = new Error(data.error || `Request failed (${res.status})`);
@@ -17,6 +26,7 @@ async function request(path, options) {
 }
 
 export const api = {
+  // Gameplay APIs
   createGame: (questions, settings) =>
     request('/api/create-game', { method: 'POST', body: JSON.stringify({ questions, settings }) }),
 
@@ -34,4 +44,20 @@ export const api = {
 
   sendReaction: (pin, emoji, nickname) =>
     request('/api/send-reaction', { method: 'POST', body: JSON.stringify({ pin, emoji, nickname }) }),
+
+  // Instructor Authentication & Presentations APIs
+  authGoogle: (credential) =>
+    request('/api/auth/google', { method: 'POST', body: JSON.stringify({ credential }) }),
+
+  getPresentations: () =>
+    request('/api/presentations', { method: 'GET' }),
+
+  getPresentation: (id) =>
+    request(`/api/presentations?id=${encodeURIComponent(id)}`, { method: 'GET' }),
+
+  savePresentation: (presentation) =>
+    request('/api/presentations', { method: 'POST', body: JSON.stringify({ presentation }) }),
+
+  deletePresentation: (id) =>
+    request('/api/presentations', { method: 'DELETE', body: JSON.stringify({ id }) }),
 };

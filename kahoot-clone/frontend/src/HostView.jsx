@@ -166,7 +166,7 @@ export default function HostView() {
     }
   };
 
-  const createGame = () => {
+  const createGame = async () => {
     ensureSampleQuiz();
     const saved = localStorage.getItem('kamooy_presentations');
     let parsed = [];
@@ -177,6 +177,17 @@ export default function HostView() {
     }
 
     let presentation = parsed.find(p => p.id === id);
+    if (!presentation) {
+      try {
+        const res = await api.getPresentation(id);
+        if (res?.success && res?.presentation) {
+          presentation = res.presentation;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
     if (!presentation || !presentation.slides || presentation.slides.length === 0) {
       presentation = parsed[0];
     }

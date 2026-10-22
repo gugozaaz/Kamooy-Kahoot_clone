@@ -12,6 +12,8 @@ import gameStateHandler from './frontend/api/game-state.js';
 import hostActionHandler from './frontend/api/host-action.js';
 import submitAnswerHandler from './frontend/api/submit-answer.js';
 import sendReactionHandler from './frontend/api/send-reaction.js';
+import authGoogleHandler from './frontend/api/auth-google.js';
+import presentationsHandler from './frontend/api/presentations.js';
 
 const routes = {
   '/api/create-game': createGameHandler,
@@ -20,6 +22,8 @@ const routes = {
   '/api/host-action': hostActionHandler,
   '/api/submit-answer': submitAnswerHandler,
   '/api/send-reaction': sendReactionHandler,
+  '/api/auth/google': authGoogleHandler,
+  '/api/presentations': presentationsHandler,
 };
 
 const store = await getStore();
