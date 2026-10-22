@@ -6,7 +6,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - GOOGLE_CLIENT_ID=380819757900-614glch1gpuqsofl1paaae42c4ahta5f.apps.googleusercontent.com
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     volumes:
       - backend_data:/app/data
     restart: unless-stopped
@@ -15,7 +15,7 @@ services:
     build:
       context: ./frontend
       args:
-        - VITE_GOOGLE_CLIENT_ID=380819757900-614glch1gpuqsofl1paaae42c4ahta5f.apps.googleusercontent.com
+        - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
     depends_on:
       - backend
     restart: unless-stopped

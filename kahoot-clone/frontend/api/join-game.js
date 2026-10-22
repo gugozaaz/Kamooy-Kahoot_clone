@@ -9,7 +9,10 @@ export default withErrorHandling(async (req, res) => {
   if (!nickname || typeof nickname !== 'string' || !nickname.trim()) {
     throw new ApiError(400, 'Valid nickname is required');
   }
-  const cleanNickname = nickname.trim().slice(0, 30);
+  const cleanNickname = nickname.trim().replace(/[<>]/g, '').slice(0, 30);
+  if (!cleanNickname) {
+    throw new ApiError(400, 'Valid nickname is required');
+  }
 
   const store = await getStore();
   const playerId = crypto.randomUUID();

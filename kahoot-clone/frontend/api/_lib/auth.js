@@ -26,10 +26,15 @@ export async function verifyGoogleToken(idToken) {
       throw new ApiError(401, 'Invalid token issuer');
     }
 
-    // Verify audience matches if GOOGLE_CLIENT_ID is configured
-    const expectedClientId = process.env.GOOGLE_CLIENT_ID || '380819757900-614glch1gpuqsofl1paaae42c4ahta5f.apps.googleusercontent.com';
+    // Verify email is verified by Google
+    if (data.email_verified !== 'true' && data.email_verified !== true) {
+      throw new ApiError(401, 'Google account email is not verified');
+    }
+
+    // Verify audience strictly matches GOOGLE_CLIENT_ID
+    const expectedClientId = process.env.GOOGLE_CLIENT_ID;
     if (expectedClientId && data.aud !== expectedClientId) {
-      console.warn(`[Auth] Warning: token audience (${data.aud}) does not match expected (${expectedClientId})`);
+      throw new ApiError(401, 'Token audience mismatch (Unauthorized Client ID)');
     }
 
     const user = {

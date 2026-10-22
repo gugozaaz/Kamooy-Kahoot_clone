@@ -1,4 +1,4 @@
-export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '380819757900-614glch1gpuqsofl1paaae42c4ahta5f.apps.googleusercontent.com';
+export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 const AUTH_STORAGE_KEY = 'kamooy_instructor_auth';
 

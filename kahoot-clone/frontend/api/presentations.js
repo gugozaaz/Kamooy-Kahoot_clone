@@ -3,18 +3,13 @@ import { requireAuth } from './_lib/auth.js';
 import { dbService } from './_lib/db.js';
 
 export default withErrorHandling(async (req, res) => {
+  // All presentation management requires an authenticated instructor
+  const user = await requireAuth(req);
+
   if (req.method === 'GET') {
-    // If a specific ID is requested
     const presentationId = req.query?.id;
     if (presentationId) {
-      // Optional authentication check for individual presentation fetch (e.g., Host View)
-      let user = null;
-      try {
-        user = await requireAuth(req);
-      } catch {
-        // Allow unauthenticated fetch if running a hosted game, or fallback to any presenter
-      }
-      const presentation = dbService.getPresentation(presentationId, user ? user.id : null);
+      const presentation = dbService.getPresentation(presentationId, user.id);
       if (!presentation) {
         throw new ApiError(404, 'Presentation not found');
       }
@@ -22,13 +17,11 @@ export default withErrorHandling(async (req, res) => {
     }
 
     // List all presentations for authenticated instructor
-    const user = await requireAuth(req);
     const presentations = dbService.getPresentations(user.id);
     return sendJson(res, 200, { success: true, presentations });
   }
 
   if (req.method === 'POST') {
-    const user = await requireAuth(req);
     const body = await readJsonBody(req);
     const presentation = body?.presentation || body;
 
@@ -41,7 +34,6 @@ export default withErrorHandling(async (req, res) => {
   }
 
   if (req.method === 'DELETE') {
-    const user = await requireAuth(req);
     let id = req.query?.id;
     if (!id) {
       try {

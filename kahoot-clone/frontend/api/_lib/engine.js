@@ -220,6 +220,9 @@ export function submitAnswer(game, playerId, choice, powerupOrNow, maybeNow) {
     if (!game.players[playerId]) {
         throw new ApiError(403, 'Not a player in this game');
     }
+    if (game.answers[playerId]) {
+        throw new ApiError(400, 'Answer already submitted');
+    }
     let powerup = null;
     let now = Date.now();
     if (typeof powerupOrNow === 'number') {

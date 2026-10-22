@@ -1,6 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import fs from 'node:fs';
 import path from 'node:path';
+import { ApiError } from './http.js';
 
 let dbInstance = null;
 
@@ -90,10 +91,9 @@ export const dbService = {
   },
 
   getPresentation(id, userId) {
+    if (!id || !userId) return null;
     const db = getDatabase();
-    const row = userId
-      ? db.prepare('SELECT * FROM presentations WHERE id = ? AND user_id = ?').get(id, userId)
-      : db.prepare('SELECT * FROM presentations WHERE id = ?').get(id);
+    const row = db.prepare('SELECT * FROM presentations WHERE id = ? AND user_id = ?').get(id, userId);
 
     if (!row) return null;
     return {
@@ -108,8 +108,21 @@ export const dbService = {
   },
 
   savePresentation(userId, presentation) {
+    if (!userId) {
+      throw new ApiError(401, 'User authentication required');
+    }
     const db = getDatabase();
     const { id, title, slides, settings, createdAt, updatedAt } = presentation;
+    if (!id) {
+      throw new ApiError(400, 'Presentation id is required');
+    }
+
+    // Security check: ensure presentation does not belong to another user
+    const existing = db.prepare('SELECT user_id FROM presentations WHERE id = ?').get(id);
+    if (existing && existing.user_id !== userId) {
+      throw new ApiError(403, 'คุณไม่มีสิทธิ์แก้ไขสื่อการสอนนี้ (Forbidden: presentation belongs to another user)');
+    }
+
     const nowIso = new Date().toISOString();
 
     const stmt = db.prepare(`
@@ -120,6 +133,7 @@ export const dbService = {
         slides = excluded.slides,
         settings = excluded.settings,
         updated_at = excluded.updated_at
+      WHERE presentations.user_id = excluded.user_id
     `);
 
     stmt.run(
