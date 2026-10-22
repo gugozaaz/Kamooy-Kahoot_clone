@@ -82,5 +82,20 @@ export default function Confetti({ count = 160, duration = 4500, spread = 'top' 
     };
   }, [count, duration, spread]);
 
-  return <canvas ref={canvasRef} className="confetti-canvas" aria-hidden="true" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="confetti-canvas"
+      aria-hidden="true"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        pointerEvents: 'none',
+        zIndex: 9990
+      }}
+    />
+  );
 }

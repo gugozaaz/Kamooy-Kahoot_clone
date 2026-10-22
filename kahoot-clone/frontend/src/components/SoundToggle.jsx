@@ -18,6 +18,13 @@ export default function SoundToggle() {
       }}
       aria-label={muted ? 'Unmute sound' : 'Mute sound'}
       title={muted ? 'Unmute sound' : 'Mute sound'}
+      style={{
+        position: 'fixed',
+        top: '16px',
+        left: '16px',
+        right: 'auto',
+        zIndex: 9999
+      }}
     >
       {muted ? '🔇' : '🔊'}
     </button>

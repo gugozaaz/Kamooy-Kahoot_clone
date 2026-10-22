@@ -38,7 +38,7 @@ export default function FloatingReactions({ reactions = [], playSound = true }) 
   }, [reactions, playSound]);
 
   return (
-    <div className="floating-reactions-layer">
+    <div className="floating-reactions-layer" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 9980 }}>
       {activeItems.map(item => (
         <div
           key={item.id}

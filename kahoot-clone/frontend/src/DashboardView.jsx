@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { ensureSampleQuiz, SAMPLE_PRESENTATION } from './lib/sampleQuiz';
 import FloatingParticles from './components/FloatingParticles';
+import SoundToggle from './components/SoundToggle';
 import { sfx } from './lib/sound';
 
 export default function DashboardView() {
@@ -104,6 +105,7 @@ export default function DashboardView() {
   return (
     <div style={{ padding: '30px 20px', backgroundColor: '#f3f4f6', minHeight: '100vh', position: 'relative' }}>
       <FloatingParticles count={10} />
+      <SoundToggle />
 
       {/* Hidden File Input for Import */}
       <input
@@ -209,35 +211,37 @@ export default function DashboardView() {
                   </button>
                 </div>
 
-                {/* Symmetrically Sized Card Action Buttons */}
-                <div style={{ display: 'flex', gap: '10px', marginTop: 'auto', alignItems: 'center' }}>
+                {/* 2-Tier Ergonomic Card Action Buttons - Guaranteed Zero Overflow */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 'auto', width: '100%' }}>
                   <button
                     onClick={() => {
                       sfx.unlock();
                       window.open(`/host/${p.id}`, '_blank');
                     }}
                     className="btn-kamooy btn-kamooy-primary"
-                    style={{ flex: 1.2 }}
+                    style={{ width: '100%', height: '42px', fontSize: '0.98rem' }}
                   >
-                    🚀 เล่น (Host)
+                    🚀 เล่นเกม (Host)
                   </button>
-                  <button
-                    onClick={() => {
-                      sfx.pop();
-                      navigate(`/creator/${p.id}`);
-                    }}
-                    className="btn-kamooy btn-kamooy-secondary"
-                    style={{ flex: 1 }}
-                  >
-                    ✏️ แก้ไข
-                  </button>
-                  <button
-                    onClick={() => deletePresentation(p.id)}
-                    className="btn-kamooy btn-kamooy-danger"
-                    style={{ flex: 0.8 }}
-                  >
-                    🗑️ ลบ
-                  </button>
+                  <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                    <button
+                      onClick={() => {
+                        sfx.pop();
+                        navigate(`/creator/${p.id}`);
+                      }}
+                      className="btn-kamooy btn-kamooy-secondary"
+                      style={{ flex: 1, height: '38px', fontSize: '0.88rem', padding: '0 8px' }}
+                    >
+                      ✏️ แก้ไข
+                    </button>
+                    <button
+                      onClick={() => deletePresentation(p.id)}
+                      className="btn-kamooy btn-kamooy-danger"
+                      style={{ flex: 1, height: '38px', fontSize: '0.88rem', padding: '0 8px' }}
+                    >
+                      🗑️ ลบ
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

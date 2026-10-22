@@ -33,11 +33,11 @@ export default function Podium({ players = [] }) {
               rank={2}
               medal="🥈"
               delay="1.2s"
-              pillarHeight="170px"
+              pillarHeight="clamp(95px, 13vh, 130px)"
               pillarClass="pillar-silver"
             />
           ) : (
-            <div className="podium-empty" style={{ height: '170px' }} />
+            <div className="podium-empty" style={{ height: 'clamp(95px, 13vh, 130px)' }} />
           )}
         </div>
 
@@ -49,12 +49,12 @@ export default function Podium({ players = [] }) {
               rank={1}
               medal="🥇"
               delay="2.6s"
-              pillarHeight="230px"
+              pillarHeight="clamp(130px, 18vh, 180px)"
               pillarClass="pillar-gold"
               isWinner
             />
           ) : (
-            <div className="podium-empty" style={{ height: '230px' }} />
+            <div className="podium-empty" style={{ height: 'clamp(130px, 18vh, 180px)' }} />
           )}
         </div>
 
@@ -66,11 +66,11 @@ export default function Podium({ players = [] }) {
               rank={3}
               medal="🥉"
               delay="0.3s"
-              pillarHeight="130px"
+              pillarHeight="clamp(65px, 9vh, 90px)"
               pillarClass="pillar-bronze"
             />
           ) : (
-            <div className="podium-empty" style={{ height: '130px' }} />
+            <div className="podium-empty" style={{ height: 'clamp(65px, 9vh, 90px)' }} />
           )}
         </div>
       </div>

@@ -514,8 +514,8 @@ export default function PlayerView() {
 
         {streak >= 2 && <div className="streak-fire-border" />}
 
-        {/* Top Header / Streak info with safe right padding for SoundToggle */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0', paddingRight: '48px', position: 'relative', zIndex: 1 }}>
+        {/* Top Header / Streak info with safe left padding for top-left SoundToggle */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0', paddingLeft: '48px', position: 'relative', zIndex: 1 }}>
           <span style={{ background: 'rgba(255,255,255,0.92)', color: '#111827', padding: '4px 14px', borderRadius: '999px', fontSize: '0.9rem', fontWeight: 800, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
             🎮 เลือกคำตอบ
           </span>

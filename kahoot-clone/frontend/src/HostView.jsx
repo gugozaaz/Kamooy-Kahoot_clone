@@ -367,8 +367,8 @@ export default function HostView() {
 
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', maxWidth: '1280px', margin: '0 auto', width: '100%', flex: 1 }}>
 
-          {/* Top Header Bar */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          {/* Top Header Bar with left padding to clear top-left SoundToggle */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', paddingLeft: '56px' }}>
             <CountdownRing value={timeLeft} total={questionTotal} size={84} />
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -554,26 +554,26 @@ export default function HostView() {
 
   if (gameState === 'GAME_OVER') {
     return (
-      <div className="host-container game-bg" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '30px 20px', position: 'relative', backgroundColor: 'var(--kahoot-purple)' }}>
+      <div className="host-container game-bg" style={{ height: '100vh', maxHeight: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px 20px', position: 'relative', backgroundColor: 'var(--kahoot-purple)' }}>
         <SoundToggle />
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
         <Confetti count={260} duration={9000} />
         <FloatingParticles />
 
-        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '1000px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '3.6rem', fontWeight: 900, color: '#ffffff', textShadow: '0 4px 12px rgba(0,0,0,0.3)', margin: '0 0 20px 0' }}>
+        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '960px', textAlign: 'center' }}>
+          <h1 style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.6rem)', fontWeight: 900, color: '#ffffff', textShadow: '0 4px 12px rgba(0,0,0,0.3)', margin: '0 0 12px 0' }}>
             🎉 สรุปผลการแข่งขันรอบชิงชนะเลิศ!
           </h1>
 
           {/* 3-Tier Olympic Podium */}
           <Podium players={leaderboard || []} />
 
-          <div style={{ marginTop: '36px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
+          <div style={{ marginTop: '16px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
             <button
               className="btn-kamooy btn-kamooy-primary btn-glow"
               onClick={() => navigate('/dashboard')}
-              style={{ fontSize: '1.3rem', padding: '0 36px', height: '52px', borderRadius: '999px' }}
+              style={{ fontSize: '1.2rem', padding: '0 32px', height: '48px', borderRadius: '999px' }}
             >
               กลับหน้าจัดการ (Dashboard)
             </button>

@@ -4,6 +4,7 @@ import FloatingParticles from './components/FloatingParticles';
 import SoundToggle from './components/SoundToggle';
 import { sfx } from './lib/sound';
 import './index.css';
+import './gamify.css';
 
 export default function HomeView() {
   const [pin, setPin] = useState('');
@@ -40,7 +41,7 @@ export default function HomeView() {
       <div style={{
         position: 'absolute',
         top: '16px',
-        right: '72px',
+        right: '16px',
         zIndex: 10
       }}>
         <button

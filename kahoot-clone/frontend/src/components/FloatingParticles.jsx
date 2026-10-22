@@ -25,7 +25,7 @@ export default function FloatingParticles({ count = 18 }) {
   }, [count]);
 
   return (
-    <div className="arcade-particles" aria-hidden="true">
+    <div className="arcade-particles" aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 0 }}>
       {particles.map(p => (
         <span
           key={p.id}
