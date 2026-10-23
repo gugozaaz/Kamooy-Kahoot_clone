@@ -70,8 +70,14 @@ io.on('connection', (socket) => {
             
             for (const [playerId, answerData] of Object.entries(game.answers)) {
                 const { choice, time } = answerData;
+                const player = game.players[playerId];
+                if (!player) continue;
+                if (typeof player.streak !== 'number') player.streak = 0;
+
                 const isCorrect = currentQ.correctAnswers.includes(choice);
                 if (isCorrect) {
+                    player.streak++;
+
                     // Calculate time taken in ms
                     const timeTakenMs = time - game.questionStartTime;
                     const maxTimeMs = currentQ.timeLimit * 1000;
@@ -86,8 +92,19 @@ io.on('connection', (socket) => {
                         multiplier *= 2;
                     }
                     points = points * multiplier;
-                    
-                    game.players[playerId].score += points;
+
+                    let streakBonus = 0;
+                    if (player.streak === 2) streakBonus = 100;
+                    else if (player.streak === 3) streakBonus = 200;
+                    else if (player.streak === 4) streakBonus = 300;
+                    else if (player.streak >= 5) streakBonus = 500;
+
+                    points += streakBonus;
+                    player.score += points;
+                } else {
+                    if (answerData.powerup !== 'shield') {
+                        player.streak = 0;
+                    }
                 }
             }
             
@@ -219,7 +236,8 @@ io.on('connection', (socket) => {
         game.players[socket.id] = {
             id: socket.id,
             nickname,
-            score: 0
+            score: 0,
+            streak: 0
         };
 
         io.to(game.hostId).emit('player-joined', game.players[socket.id]);

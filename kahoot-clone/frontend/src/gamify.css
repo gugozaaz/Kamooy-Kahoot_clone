@@ -33,8 +33,8 @@
   justify-content: center;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-.sound-toggle:hover { transform: translateY(-2px); }
-.sound-toggle:active {
+.sound-toggle:hover, .fullscreen-toggle:hover { transform: translateY(-2px); }
+.sound-toggle:active, .fullscreen-toggle:active {
   transform: translateY(3px);
   box-shadow: none;
 }
@@ -47,6 +47,13 @@
     width: 38px !important;
     height: 38px !important;
     font-size: 1.15rem !important;
+  }
+  .fullscreen-toggle {
+    top: 12px !important;
+    left: 56px !important;
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 1.05rem !important;
   }
 }
 

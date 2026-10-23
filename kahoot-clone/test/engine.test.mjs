@@ -122,9 +122,13 @@ ok('all answered -> QUESTION_RESULT', r.json.status === 'QUESTION_RESULT');
 ok('Ben got speed points (>750, <=1000)', r.json.result.myScore > 750 && r.json.result.myScore <= 1000);
 ok('Ben sees correctAnswers', r.json.result.correctAnswers.includes(1));
 ok('Ben was right', r.json.result.correctAnswers.includes(1) && true);
+ok('Ben has rank 1 and 0 points behind leader', r.json.result.myRank === 1 && r.json.result.pointsBehindLeader === 0);
+ok('Ben has isCorrect true and streak 1', r.json.result.isCorrect === true && r.json.result.myStreak === 1);
 
 r = await call(gameStateHandler, makeReq('GET', { query: { pin, role: 'player', token: annId } }));
 ok('Ann scored 0', r.json.result.myScore === 0);
+ok('Ann has rank 2 and pointsBehindLeader > 750', r.json.result.myRank === 2 && r.json.result.pointsBehindLeader > 750);
+ok('Ann has isCorrect false and streak 0', r.json.result.isCorrect === false && r.json.result.myStreak === 0);
 
 r = await call(gameStateHandler, makeReq('GET', { query: { pin, role: 'host', token: hostId } }));
 ok('stats count both answers', r.json.result.answersStats['0'] === 1 && r.json.result.answersStats['1'] === 1);

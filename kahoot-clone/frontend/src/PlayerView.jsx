@@ -664,6 +664,11 @@ export default function PlayerView() {
           {isCorrect && pointsGained > 0 && (
             <div className="score-pop" style={{ fontSize: 'clamp(2.2rem, 7vw, 3rem)', color: '#ffeb3b', textShadow: '0 4px 12px rgba(0,0,0,0.35)' }}>
               +{pointsGained} คะแนน {activePowerup === '2x' ? ' (x2 Booster!)' : ''}
+              {resultData?.streakBonus > 0 && (
+                <div style={{ fontSize: '1rem', color: '#ffffff', fontWeight: 800, marginTop: '4px' }}>
+                  🔥 รวม Streak Bonus +{resultData.streakBonus} แต้ม!
+                </div>
+              )}
             </div>
           )}
 
@@ -693,9 +698,22 @@ export default function PlayerView() {
 
           {myRank && (
             <div style={{ marginTop: '18px' }}>
-              <span className="rank-plate" style={{ fontSize: 'clamp(1.1rem, 4vw, 1.3rem)' }}>
-                🏆 คุณอยู่อันดับที่ #{myRank}
-              </span>
+              {myRank === 1 ? (
+                <span className="rank-plate" style={{ fontSize: 'clamp(1.1rem, 4vw, 1.35rem)', background: '#ffd700', color: '#111827', fontWeight: 900 }}>
+                  🥇 คุณคือผู้นำอันดับ 1! ยอดเยี่ยมมาก!
+                </span>
+              ) : (
+                <div>
+                  <span className="rank-plate" style={{ fontSize: 'clamp(1.1rem, 4vw, 1.3rem)' }}>
+                    🏆 คุณอยู่อันดับที่ #{myRank}
+                  </span>
+                  {resultData?.pointsBehindLeader > 0 && (
+                    <div style={{ marginTop: '8px', fontSize: '1.05rem', fontWeight: 800, color: 'rgba(255,255,255,0.95)', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                      ⚡ ตามหลังอันดับ 1 อยู่เพียง {resultData.pointsBehindLeader} คะแนน!
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -736,9 +754,22 @@ export default function PlayerView() {
 
           {myRank && (
             <div style={{ marginTop: '14px' }}>
-              <span className="rank-plate" style={{ background: '#f3f4f6', color: '#111827', fontSize: 'clamp(1.1rem, 3.8vw, 1.3rem)', padding: '8px 20px' }}>
-                🏅 อันดับที่ #{myRank}
-              </span>
+              {myRank === 1 ? (
+                <span className="rank-plate" style={{ background: '#ffd700', color: '#111827', fontWeight: 900, fontSize: 'clamp(1.1rem, 3.8vw, 1.35rem)', padding: '8px 20px' }}>
+                  🥇 คุณคือผู้นำอันดับ 1!
+                </span>
+              ) : (
+                <div>
+                  <span className="rank-plate" style={{ background: '#f3f4f6', color: '#111827', fontSize: 'clamp(1.1rem, 3.8vw, 1.3rem)', padding: '8px 20px' }}>
+                    🏅 อันดับที่ #{myRank}
+                  </span>
+                  {state?.pointsBehindLeader > 0 && (
+                    <div style={{ marginTop: '8px', fontSize: '0.95rem', fontWeight: 800, color: '#4b5563' }}>
+                      ตามหลังอันดับ 1 อยู่ {state.pointsBehindLeader} คะแนน
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

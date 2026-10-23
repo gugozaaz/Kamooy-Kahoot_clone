@@ -106,8 +106,14 @@ export function showResult(game, now) {
 
     for (const [playerId, answerData] of Object.entries(game.answers)) {
         const { choice, time, powerup } = answerData;
+        const player = game.players[playerId];
+        if (!player) continue;
+        if (typeof player.streak !== 'number') player.streak = 0;
+
         const isCorrect = q.correctAnswers.includes(choice);
         if (isCorrect) {
+            player.streak++;
+
             // Calculate time taken in ms
             const timeTakenMs = time - game.questionStartedAt;
             const maxTimeMs = q.timeLimit * 1000;
@@ -123,7 +129,30 @@ export function showResult(game, now) {
             }
             points = points * multiplier;
 
-            game.players[playerId].score += points;
+            // Kahoot streak bonus points:
+            let streakBonus = 0;
+            if (player.streak === 2) streakBonus = 100;
+            else if (player.streak === 3) streakBonus = 200;
+            else if (player.streak === 4) streakBonus = 300;
+            else if (player.streak >= 5) streakBonus = 500;
+
+            points += streakBonus;
+            player.score += points;
+
+            answerData.isCorrect = true;
+            answerData.pointsGained = points;
+            answerData.streakBonus = streakBonus;
+            answerData.streak = player.streak;
+        } else {
+            if (powerup === 'shield') {
+                // streak protected by powerup
+            } else {
+                player.streak = 0;
+            }
+            answerData.isCorrect = false;
+            answerData.pointsGained = 0;
+            answerData.streakBonus = 0;
+            answerData.streak = player.streak;
         }
     }
 
@@ -164,7 +193,7 @@ export function joinPlayer(game, playerId, nickname, now, avatar = null) {
     if (nameExists) {
         throw new ApiError(400, 'Nickname taken');
     }
-    game.players[playerId] = { id: playerId, nickname, score: 0, avatar: avatar || null };
+    game.players[playerId] = { id: playerId, nickname, score: 0, streak: 0, avatar: avatar || null };
 }
 
 export function hostAction(game, action, now) {
@@ -296,6 +325,13 @@ export function playerProjection(row, playerId, now) {
     if (!me) throw new ApiError(403, 'Not a player in this game');
     const q = currentQuestion(game);
     const showAnswerText = game.settings?.showAnswerText ?? true;
+
+    const sorted = sortedPlayers(game);
+    const myRank = sorted.findIndex(p => p.id === playerId) + 1;
+    const leader = sorted[0];
+    const pointsBehindLeader = leader && leader.id !== playerId ? Math.max(0, leader.score - me.score) : 0;
+    const myAnswer = game.answers ? game.answers[playerId] : null;
+
     const base = {
         version,
         serverNow: now,
@@ -304,6 +340,9 @@ export function playerProjection(row, playerId, now) {
         settings: game.settings || { enablePowerups: false, showAnswerText: true },
         currentIndex: game.currentQuestionIndex,
         myScore: me.score,
+        myRank,
+        myStreak: me.streak || 0,
+        pointsBehindLeader,
         reactions: (game.reactions || []).filter(r => now - r.at < 6000),
         question: game.status === 'QUESTION_PREVIEW'
             ? { text: q.text, timeLimit: q.timeLimit }
@@ -322,10 +361,19 @@ export function playerProjection(row, playerId, now) {
             ? Math.max(0, q.timeLimit * 1000 - (now - game.questionStartedAt))
             : null,
         result: game.status === 'QUESTION_RESULT'
-            ? { correctAnswers: game.lastResult?.correctAnswers || [], myScore: me.score }
+            ? { 
+                correctAnswers: game.lastResult?.correctAnswers || [], 
+                myScore: me.score,
+                myRank,
+                myStreak: me.streak || 0,
+                isCorrect: myAnswer?.isCorrect ?? false,
+                pointsGained: myAnswer?.pointsGained ?? 0,
+                streakBonus: myAnswer?.streakBonus ?? 0,
+                pointsBehindLeader
+              }
             : null,
         finalLeaderboard: game.status === 'GAME_OVER'
-            ? { myScore: me.score, myRank: sortedPlayers(game).findIndex(p => p.id === playerId) + 1 }
+            ? { myScore: me.score, myRank }
             : null
     };
     return base;

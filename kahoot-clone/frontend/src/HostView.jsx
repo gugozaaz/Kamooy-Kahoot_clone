@@ -7,6 +7,7 @@ import { useCountUp } from './lib/useCountUp';
 import { sfx } from './lib/sound';
 import Confetti from './components/Confetti';
 import SoundToggle from './components/SoundToggle';
+import FullscreenToggle from './components/FullscreenToggle';
 import CountdownRing from './components/CountdownRing';
 import FloatingParticles from './components/FloatingParticles';
 import FloatingReactions from './components/FloatingReactions';
@@ -105,14 +106,19 @@ export default function HostView() {
 
   useEffect(() => () => sfx.stopMusic(), []);
 
-  // Clock ticks
+  // Clock ticks & music acceleration in the final 5 seconds
   const prevTick = useRef(null);
   useEffect(() => {
     if (gameState !== 'QUESTION_ACTIVE' || timeLeft <= 0) return;
     if (prevTick.current === timeLeft) return;
     prevTick.current = timeLeft;
-    if (timeLeft <= 5) sfx.urgentTick();
-    else if (timeLeft % 2 === 0) sfx.tick();
+    if (timeLeft <= 5) {
+      sfx.urgentTick();
+      sfx.music('question', 1.35, 1.15);
+    } else {
+      if (timeLeft % 2 === 0) sfx.tick();
+      sfx.music('question', 1, 1);
+    }
   }, [gameState, timeLeft]);
 
   // Preview 3-2-1 countdown beeps
@@ -241,6 +247,7 @@ export default function HostView() {
       <div className="host-container game-bg" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <FloatingParticles />
         <SoundToggle />
+        <FullscreenToggle />
         <h1 style={{ fontSize: '4.5rem', color: '#fff', textShadow: '3px 3px 0 #000', margin: 0 }}>Kamooy!</h1>
         <p style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 'bold', marginTop: '16px' }}>กำลังสร้างห้องเล่นเกม...</p>
         <div className="spinner" style={{ borderTopColor: '#fff', width: '50px', height: '50px', marginTop: '16px' }}></div>
@@ -255,6 +262,7 @@ export default function HostView() {
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
         <SoundToggle />
+        <FullscreenToggle />
 
         <div className="lobby-header" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '30px', flexWrap: 'wrap', marginBottom: '24px' }}>
@@ -334,6 +342,7 @@ export default function HostView() {
     return (
       <div className="host-container game-bg" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', maxHeight: '100vh', padding: '20px', overflow: 'hidden', backgroundColor: 'var(--theme-yellow)' }}>
         <SoundToggle />
+        <FullscreenToggle />
         <HostSoundboard />
         <FloatingParticles />
         <FloatingReactions reactions={state?.reactions} />
@@ -376,6 +385,7 @@ export default function HostView() {
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
         <SoundToggle />
+        <FullscreenToggle />
 
         {currentQuestion?.image && currentQuestion?.isFullScreenImage && (
           <img src={currentQuestion.image} alt="Background" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 0, opacity: 0.8 }} />
@@ -383,8 +393,8 @@ export default function HostView() {
 
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', maxWidth: '1280px', margin: '0 auto', width: '100%', flex: 1 }}>
 
-          {/* Top Header Bar with left padding to clear top-left SoundToggle */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', paddingLeft: '56px' }}>
+          {/* Top Header Bar with left padding to clear top-left SoundToggle & FullscreenToggle */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', paddingLeft: '126px' }}>
             <CountdownRing value={timeLeft} total={questionTotal} size={84} />
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -457,6 +467,7 @@ export default function HostView() {
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
         <SoundToggle />
+        <FullscreenToggle />
 
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', maxWidth: '1280px', margin: '0 auto', width: '100%', flex: 1 }}>
 
@@ -546,6 +557,7 @@ export default function HostView() {
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
         <SoundToggle />
+        <FullscreenToggle />
 
         <div className="leaderboard" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '750px', background: 'rgba(255, 255, 255, 0.95)', padding: '36px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.2)' }}>
           <h2 style={{ fontSize: '2.6rem', fontWeight: 900, textAlign: 'center', color: '#111827', margin: '0 0 24px 0' }}>
@@ -587,6 +599,7 @@ export default function HostView() {
         }}
       >
         <SoundToggle />
+        <FullscreenToggle />
         <FloatingReactions reactions={state?.reactions} />
         <HostSoundboard />
         <Confetti count={260} duration={9000} />

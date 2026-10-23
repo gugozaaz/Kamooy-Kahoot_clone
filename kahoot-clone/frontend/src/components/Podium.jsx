@@ -11,13 +11,18 @@ export default function Podium({ players = [] }) {
 
   // Play fanfare sequence as each step reveals
   useEffect(() => {
-    const t3 = p3 ? setTimeout(() => sfx.streak(3), 600) : null;
+    const t3 = p3 ? setTimeout(() => sfx.streak(3), 500) : null;
     const t2 = p2 ? setTimeout(() => sfx.streak(5), 1800) : null;
-    const t1 = p1 ? setTimeout(() => sfx.fanfare(), 3000) : null;
+    const tdrum = p1 ? setTimeout(() => sfx.drumroll(1.2), 2600) : null;
+    const t1 = p1 ? setTimeout(() => {
+      sfx.fanfare();
+      sfx.applause();
+    }, 3800) : null;
 
     return () => {
       if (t3) clearTimeout(t3);
       if (t2) clearTimeout(t2);
+      if (tdrum) clearTimeout(tdrum);
       if (t1) clearTimeout(t1);
     };
   }, [p1, p2, p3]);
@@ -31,7 +36,7 @@ export default function Podium({ players = [] }) {
             player={p2 || { isPlaceholder: true }}
             rank={2}
             medal="🥈"
-            delay="1.2s"
+            delay="1.8s"
             pillarHeight="clamp(95px, 13vh, 130px)"
             pillarClass="pillar-silver"
           />
@@ -43,7 +48,7 @@ export default function Podium({ players = [] }) {
             player={p1 || { isPlaceholder: true }}
             rank={1}
             medal="🥇"
-            delay="2.6s"
+            delay="3.8s"
             pillarHeight="clamp(130px, 18vh, 180px)"
             pillarClass="pillar-gold"
             isWinner={!!p1}
@@ -56,7 +61,7 @@ export default function Podium({ players = [] }) {
             player={p3 || { isPlaceholder: true }}
             rank={3}
             medal="🥉"
-            delay="0.3s"
+            delay="0.5s"
             pillarHeight="clamp(65px, 9vh, 90px)"
             pillarClass="pillar-bronze"
           />

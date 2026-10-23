@@ -286,11 +286,48 @@ export default function DashboardView() {
           </div>
 
           {/* Google Sign In Component */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
             <GoogleSignInButton
               onSuccess={handleLoginSuccess}
               onError={(err) => console.error(err)}
             />
+          </div>
+
+          {/* Test Bypass Login for Local Dev & Testing */}
+          <div style={{ marginBottom: '20px' }}>
+            <button
+              type="button"
+              onClick={() => {
+                sfx.fanfare();
+                const mockUser = {
+                  id: 'test-instructor-1',
+                  name: 'ผู้สอน (โหมดทดสอบ)',
+                  email: 'instructor@kamooy.local',
+                  picture: 'https://api.dicebear.com/7.x/bottts/svg?seed=instructor'
+                };
+                saveAuth('test-token-bypass', mockUser);
+                setAuth({ token: 'test-token-bypass', user: mockUser });
+                ensureSampleQuiz();
+                const saved = localStorage.getItem('kamooy_presentations');
+                if (saved) {
+                  try {
+                    setPresentations(JSON.parse(saved));
+                  } catch {}
+                }
+              }}
+              className="btn-kamooy btn-kamooy-secondary"
+              style={{
+                width: '100%',
+                height: '42px',
+                fontSize: '0.92rem',
+                fontWeight: 800,
+                background: '#fef3c7',
+                border: '1px solid #f59e0b',
+                color: '#92400e'
+              }}
+            >
+              ⚡ เข้าสู่ระบบผู้สอนทันที (โหมดทดสอบ)
+            </button>
           </div>
 
           <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '20px' }}>
@@ -526,7 +563,7 @@ export default function DashboardView() {
                   <button
                     onClick={() => {
                       sfx.unlock();
-                      window.open(`/host/${p.id}`, '_blank');
+                      navigate(`/host/${p.id}`);
                     }}
                     className="btn-kamooy btn-kamooy-primary"
                     style={{ width: '100%', height: '42px', fontSize: '0.98rem' }}

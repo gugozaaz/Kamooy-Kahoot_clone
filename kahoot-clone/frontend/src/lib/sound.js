@@ -158,9 +158,31 @@ const effects = {
     [NOTE.C5, NOTE.G5, NOTE.C6, NOTE.E6].forEach((f, i) =>
       tone({ freq: f, dur: 0.12, type: 'triangle', gain: 0.18, at: i * 0.05 }));
   },
-  // Suspenseful drumroll/rumble
-  drumroll: () => {
-    noise({ dur: 0.6, gain: 0.12, from: 800, to: 200 });
+  // Suspenseful drumroll/rumble with escalating snare strikes
+  drumroll: (dur = 1.4) => {
+    const c = ensureCtx();
+    if (!c || muted) return;
+    const totalHits = Math.floor(dur * 18);
+    for (let i = 0; i < totalHits; i++) {
+      const at = (i / totalHits) * dur;
+      const progress = i / totalHits;
+      noise({
+        dur: 0.045,
+        gain: 0.06 + progress * 0.12,
+        at,
+        from: 700 + progress * 600,
+        to: 250
+      });
+      if (i % 2 === 0) {
+        tone({
+          freq: 120 + progress * 80,
+          dur: 0.05,
+          type: 'triangle',
+          gain: 0.08 + progress * 0.1,
+          at
+        });
+      }
+    }
   },
   // Reaction pop
   reaction: () => {
@@ -223,30 +245,34 @@ const TRACKS = {
 
 let musicTimer = null;
 let musicName = null;
+let currentSpeed = 1;
 
 function stopMusic() {
   if (musicTimer) clearInterval(musicTimer);
   musicTimer = null;
   musicName = null;
+  currentSpeed = 1;
 }
 
-function playMusic(name) {
-  if (musicName === name) return;
+function playMusic(name, speed = 1, pitchShift = 1) {
+  if (musicName === name && currentSpeed === speed) return;
   stopMusic();
   const track = TRACKS[name];
   if (!track) return;
   musicName = name;
+  currentSpeed = speed;
 
   let step = 0;
+  const actualStep = Math.max(0.08, track.step / speed);
   const playStep = () => {
     if (muted || !musicName) return;
     const chord = track.notes[step % track.notes.length];
     step += 1;
     if (!chord) return;
-    chord.forEach(freq => tone({ freq, dur: track.step * 0.85, type: track.type, gain: track.gain }));
+    chord.forEach(freq => tone({ freq: freq * pitchShift, dur: actualStep * 0.85, type: track.type, gain: track.gain }));
   };
   playStep();
-  musicTimer = setInterval(playStep, track.step * 1000);
+  musicTimer = setInterval(playStep, actualStep * 1000);
 }
 
 export const sfx = {
